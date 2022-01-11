@@ -1,11 +1,11 @@
 .photo-card__button {
-    width: 25px;
-    height: 19px;
-    background-image: url("../../../images/photo-card__button.svg");
-    background-repeat: no-repeat;
-    background-color: transparent;
-    background-position: center;
-    object-fit: contain;
-    border: none;
-    padding: 0;
+  width: 25px;
+  height: 19px;
+  background-image: url("../../../images/photo-card__button.svg");
+  background-repeat: no-repeat;
+  background-color: transparent;
+  background-position: center;
+  object-fit: contain;
+  border: none;
+  padding: 0;
 }
