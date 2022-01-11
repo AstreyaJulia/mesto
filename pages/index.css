@@ -2,6 +2,9 @@
 @import "../blocks/page/page.css";
 @import "../fonts/fonts.css";
 
+@import "../blocks/header/header.css";
+@import "../blocks/header/__logo/header__logo.css";
+
 @import "../blocks/profile/__title/profile__title.css";
 @import "../blocks/profile/__subtitle/profile__subtitle.css";
 
