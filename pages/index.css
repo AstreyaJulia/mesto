@@ -1,2 +1,10 @@
 @import "../vendor/normalize.css";
+@import "../blocks/page/page.css";
 @import "../fonts/fonts.css";
+
+@import "../blocks/profile/__title/profile__title.css";
+@import "../blocks/profile/__subtitle/profile__subtitle.css";
+
+@import "../blocks/photo-card/__title/photo-card__title.css";
+
+@import "../blocks/footer/__copyright/footer__copyright.css";
