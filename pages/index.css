@@ -13,9 +13,6 @@
 @import "../blocks/profile/__button/profile__button.css";
 @import "../blocks/profile/__add-button/profile__add-button.css";
 
-@import "../blocks/profile/__title/profile__title.css";
-@import "../blocks/profile/__subtitle/profile__subtitle.css";
-
 @import "../blocks/photo-card/__title/photo-card__title.css";
 
 @import "../blocks/footer/__copyright/footer__copyright.css";

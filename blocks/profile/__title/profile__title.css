@@ -11,3 +11,10 @@
   grid-column: 1/2;
   grid-row: 1/2;
 }
+
+@media screen and (max-width: 740px) {
+  .profile__title {
+    font-size: 27px;
+    line-height: normal;
+  }
+}

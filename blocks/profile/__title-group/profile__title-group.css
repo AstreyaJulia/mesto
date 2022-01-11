@@ -5,3 +5,11 @@
   grid-template-rows: repeat(2, auto);
   column-gap: 18px;
 }
+
+@media screen and (max-width: 740px) {
+  .profile__title-group {
+    margin: 26px auto 0;
+    grid-template-columns: auto 18px;
+    column-gap: 10px;
+  }
+}
