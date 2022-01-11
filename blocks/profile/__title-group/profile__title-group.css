@@ -1,0 +1,7 @@
+.profile__title-group {
+  margin-left: 30px;
+  display: grid;
+  grid-template-columns: auto 24px;
+  grid-template-rows: repeat(2, auto);
+  column-gap: 18px;
+}
