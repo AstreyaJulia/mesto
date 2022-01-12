@@ -3,9 +3,10 @@
   border-radius: 10px;
   padding: 34px 36px 37px;
   margin: 0 auto;
+  display: flex;
   flex-direction: column;
   position: relative;
-  max-width: 430px;
+  max-width: calc(430px - 72px);
   width: 100%;
   box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
 }

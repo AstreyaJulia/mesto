@@ -6,8 +6,8 @@
 const profile_edit_btn = document.querySelector(".profile__button");
 
 // Информация о пользователе из профиля
-const profile_title = document.querySelector(".profile__title");
-const profile_subtitle = document.querySelector(".profile__subtitle");
+let profile_title = document.querySelector(".profile__title");
+let profile_subtitle = document.querySelector(".profile__subtitle");
 
 ///* Всплывашка (popup) редактирования профиля *///
 
@@ -18,19 +18,17 @@ const profile_edit_popup = document.querySelector(".popup_edit_profile");
 const profile_edit_popup_close_btn = profile_edit_popup.querySelector(".popup__close-button");
 
 // Инпуты в всплывашке редактирования профиля
-const popup_title_input = document.getElementById('profile_name');
-const popup_subtitle_input = document.getElementById('profile_title');
+let popup_title_input = document.getElementById('profile_name');
+let popup_subtitle_input = document.getElementById('profile_title');
 
 // Форма в всплывашке редактирования профиля
 const edit_profile_form = profile_edit_popup.querySelector('.popup__form');
-
 
 
 /// * Карточки в галерее *///
 
 // Все кнопки лайк в галерее. Кнопок много, и клик по каждой надо слушать.
 const photo_card_like_btns = document.querySelectorAll('.photo-card__button');
-
 
 
 ///* ФУНКЦИИ *///
@@ -84,9 +82,19 @@ function photo_like(button) {
   }
 }
 
-function form_submit_check(evt) {
+// функция отправки данных формы редактирования профиля
+// аргумент evt - передаваемое событие. только для evt.preventDefault()
+function profile_form_submit(evt) {
   evt.preventDefault();
 
+  /* присваиваем значениям в профиле значения инпутов */
+  profile_title.textContent = popup_title_input.value;
+  profile_subtitle.textContent = popup_subtitle_input.value;
+
+  /* Закрыть всплывашку профиля */
+  popup_close(profile_edit_popup);
+  /* Очистить инпуты в всплывашке редактирования профиля */
+  clear_inputs(profile_edit_popup);
 }
 
 /// ПРОСЛУШИВАТЕЛИ ///
@@ -116,5 +124,5 @@ photo_card_like_btns.forEach((photo_card_like_btn) => {
   })
 });
 
-// Прослушиватель для отправки формы редактирования профиля
-edit_profile_form.addEventListener('submit', form_submit_check);
+// Слушаем отправку формы редактирования профиля
+edit_profile_form.addEventListener('submit', profile_form_submit);
