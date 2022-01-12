@@ -14,7 +14,7 @@ const profile_subtitle = document.querySelector(".profile__subtitle");
 // Сама всплывашка редактирования профиля
 const profile_edit_popup = document.querySelector(".popup_edit_profile");
 
-// Кнопка закрытия всплывашки
+// Кнопка закрытия всплывашки редактирования профиля
 const profile_edit_popup_close_btn = profile_edit_popup.querySelector(".popup__close-button");
 
 // Инпуты в всплывашке редактирования профиля
