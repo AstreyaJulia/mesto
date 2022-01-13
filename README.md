@@ -30,7 +30,7 @@
 
 * [Iceland](https://unsplash.com/photos/NljlxpD5nDo) от пользователя `Cosmic Timetraveler`;
 * [Буковель, Yaremcha, Ukraine](https://unsplash.com/photos/vwkGYtsTrOw) от пользователя `Maksym Tymchyk`;
-* [Iceland](https://unsplash.com/photos/3ZM3ynmfJKY) от пользователя Leandra Rieger;
+* [Iceland](https://unsplash.com/photos/3ZM3ynmfJKY) от пользователя `Leandra Rieger`;
 * [Road trip through Arizona](https://unsplash.com/photos/DcLgNe7rswI) от пользователя `Polina Kuzovkova`;
 * [Toronto, Canada](https://unsplash.com/photos/EtegrieNVDM) от пользователя `Hazwan Kosni`;
 * [Trondheim](https://unsplash.com/photos/B8CQ-YXE1l4) от пользователя `Error 420 📷`;
