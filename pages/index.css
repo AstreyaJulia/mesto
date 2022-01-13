@@ -4,6 +4,7 @@
 @import "../blocks/button/button.css";
 
 @import "../blocks/header/header.css";
+@import "../blocks/header/__link/header__link.css";
 @import "../blocks/header/__logo/header__logo.css";
 
 @import "../blocks/profile/profile.css";
@@ -15,6 +16,7 @@
 @import "../blocks/profile/__add-button/profile__add-button.css";
 
 @import "../blocks/gallery/gallery.css";
+@import "../blocks/photo-cards/photo-cards.css";
 @import "../blocks/photo-card/photo-card.css";
 @import "../blocks/photo-card/__footer/photo-card__footer.css";
 @import "../blocks/photo-card/__title/photo-card__title.css";
