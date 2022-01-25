@@ -15,7 +15,7 @@ let profile_subtitle = document.querySelector(".profile__subtitle");
 const profile_edit_popup = document.querySelector(".popup_edit_profile");
 
 // Кнопка закрытия всплывашки редактирования профиля
-const profile_edit_popup_close_btn = profile_edit_popup.querySelector(".popup__close-button");
+//const profile_edit_popup_close_btn = profile_edit_popup.querySelector(".popup__close-button");
 
 // Инпуты в всплывашке редактирования профиля
 let popup_title_input = document.getElementById('profile_name');
@@ -24,6 +24,16 @@ let popup_subtitle_input = document.getElementById('profile_title');
 // Форма в всплывашке редактирования профиля
 const edit_profile_form = profile_edit_popup.querySelector('.popup__form');
 
+
+/* Добавление места */
+// Кнопка Добавить место
+const add_place_btn = document.querySelector(".profile__add-button");
+
+///* Всплывашка (popup) добавления места *///
+const new_place_popup = document.querySelector(".popup_new-place");
+
+// кнопки закрытия всплывашек на всех всплывашках
+const popup_close_buttons = document.querySelectorAll(".popup__close-button");
 
 /// * Карточки в галерее *///
 
@@ -39,13 +49,21 @@ function popup_show(popup) {
   popup.classList.add('popup_opened');
 }
 
-/* FIXME -> Сделать универсальную ф-ю открывашку, в которой условие,
-    если у элемента есть класс нового места или профиля, то сделать сброс значений */
-// Закрывашка всплывашки. Если всплывашек будет несколько
-// Аргумент popup - элемент popup
-function popup_close(popup) {
-  popup.classList.remove('popup_opened');
-}
+// Универсальная функция-закрывашка всплывашек
+popup_close_buttons.forEach((popup_close_button) => {
+// для каждой кнопки закрытия всплывашки делаем прослушиватель
+  popup_close_button.addEventListener('click', function () {
+    // локальная переменная для всплывашки, ищет ближнюю родительскую, с классом popup
+    let popup = popup_close_button.closest('.popup');
+    // закрываем всплывашку, удаляем класс popup_opened
+    popup.classList.remove('popup_opened');
+    // если всплывашка с классом popup_new-place или popup_edit_profile, очищаем инпуты
+    // хотя можно присваивать таким всплывашкам отельный класс и не перечислять в условии
+    if (popup.classList.contains('popup_new-place') || popup.classList.contains('popup_new-place')) {
+      clear_inputs(popup);
+    }
+  })
+})
 
 // Получить сведения о пользователе
 // в данный момент - ииз профиля, в будущем - из сервера
@@ -107,16 +125,6 @@ profile_edit_btn.addEventListener('click', function () {
   get_users_info();
 })
 
-// Слушаем клик по кнопке закрытия всплывашки редактирования профиля
-/* FIXME -> Сделать универсальную ф-ю открывашку, в которой условие,
-    если у элемента есть класс нового места или профиля, то сделать сброс значений */
-profile_edit_popup_close_btn.addEventListener('click', function () {
-  /* Закрыть всплывашку профиля */
-  popup_close(profile_edit_popup);
-  /* Очистить инпуты в всплывашке редактирования профиля */
-  clear_inputs(profile_edit_popup);
-})
-
 // Слушаем клик по кнопке лайка фотографии. Кнопок много, вешаем прослушиватель на каждую.
 photo_card_like_btns.forEach((photo_card_like_btn) => {
   photo_card_like_btn.addEventListener('click', function () {
@@ -126,3 +134,9 @@ photo_card_like_btns.forEach((photo_card_like_btn) => {
 
 // Слушаем отправку формы редактирования профиля
 edit_profile_form.addEventListener('submit', profile_form_submit);
+
+// Слушаем клик по кнопке Добавить место
+add_place_btn.addEventListener('click', function () {
+  /* Открыть всплывашку добавления места */
+  popup_show(new_place_popup);
+})
