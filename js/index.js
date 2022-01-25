@@ -37,9 +37,14 @@ const popup_close_buttons = document.querySelectorAll(".popup__close-button");
 
 /// * Карточки в галерее *///
 
+// изображения в карточках галереи, нужны именно изображения, иначе будет срабатывать там, где не надо
+const photo_card_images = document.querySelectorAll('.photo-card__image');
+
 // Все кнопки лайк в галерее. Кнопок много, и клик по каждой надо слушать.
 const photo_card_like_btns = document.querySelectorAll('.photo-card__button');
 
+///* Всплывашка просмотра изображений *///
+const image_view_popup = document.querySelector(".popup_view_image");
 
 ///* ФУНКЦИИ *///
 
@@ -100,6 +105,16 @@ function photo_like(button) {
   }
 }
 
+// записываем свойства нажатой картинки в всплывашку:
+// src - из src нажатой картинки,
+// alt и описание изображения - из photo-card__title ближайшего родительского photo-card
+function get_image(photo_card_image) {
+  document.querySelector(".popup__image").src = photo_card_image.src;
+  document.querySelector(".popup__image").alt = photo_card_image.closest('.photo-card').querySelector('.photo-card__title').innerHTML;
+  document.querySelector(".popup__caption").innerHTML = photo_card_image.closest('.photo-card').querySelector('.photo-card__title').innerHTML;
+  popup_show(image_view_popup);
+}
+
 // функция отправки данных формы редактирования профиля
 // аргумент evt - передаваемое событие. только для evt.preventDefault()
 function profile_form_submit(evt) {
@@ -109,8 +124,8 @@ function profile_form_submit(evt) {
   profile_title.textContent = popup_title_input.value;
   profile_subtitle.textContent = popup_subtitle_input.value;
 
-  /* Закрыть всплывашку профиля */
-  popup_close(profile_edit_popup);
+  /* Закрыть всплывашку профиля - удаляем класс popup_opened */
+  profile_edit_popup.classList.remove('popup_opened');
   /* Очистить инпуты в всплывашке редактирования профиля */
   clear_inputs(profile_edit_popup);
 }
@@ -140,3 +155,10 @@ add_place_btn.addEventListener('click', function () {
   /* Открыть всплывашку добавления места */
   popup_show(new_place_popup);
 })
+
+// Слушаем клик по изображениям всех карточек
+photo_card_images.forEach((photo_card_image) => {
+  photo_card_image.addEventListener('click', function () {
+    get_image(photo_card_image);
+  })
+});

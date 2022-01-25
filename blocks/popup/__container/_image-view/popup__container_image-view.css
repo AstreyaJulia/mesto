@@ -1,0 +1,7 @@
+.popup__container_image-view {
+  background-color: transparent;
+  padding: 0;
+  max-width: calc(100vw - 80px);
+  display: flex;
+  width: auto;
+}
