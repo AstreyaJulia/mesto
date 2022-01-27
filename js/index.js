@@ -113,8 +113,8 @@ function get_users_info() {
 // Очистить все инпуты после закрытия всплывашки
 // Аргумент popup - элемент popup
 function clear_inputs(popup) {
-  // ищем все input[type="text"] в popup который передан аргументом
-  let inputs = popup.querySelectorAll('input[type="text"]');
+  // ищем все input в popup который передан аргументом
+  let inputs = popup.querySelectorAll('input');
   // Очищаем каждый инпут
   inputs.forEach((input) => {
     input.value = "";
@@ -186,9 +186,10 @@ function photo_cards_render() {
 
 // из массива карточек initialCards делаем элемент из карточек (константа photo_cards_string) по шаблону,
 // записанному в константе photo_cards_string_create, соединяя элементы между собой элементом '' (join(''))
+// в обратном порядке, так как в верстке новые карточки расположены слева вверху, а старые - справа внизу
 // аргумент card - отдельный элемент массива initialCards
   const photo_cards_string = initialCards.map((card) =>
-    photo_cards_string_create(card)).join('');
+    photo_cards_string_create(card)).reverse().join('');
 
 // вставляем созданный элемент из карточек в контейнер photo_cards
   photo_cards.insertAdjacentHTML('beforeend', photo_cards_string);
@@ -239,25 +240,29 @@ function photo_delete(element) {
   let index = Object.keys(photo_rendered).find(key => photo_rendered[key] === element);
 
   // из массива initialCards удаляем элемент по id
-  initialCards.splice(index, 1);
+  // так как массив реверсирован, то порядок индексов будет противоположен порядку карточек,
+  // из полученного индекса вычитаем длину массива карточек (-1, т.к. индексы идут с 0),
+  // получаем абсолютное значение (избавляемся от отрицательных значений)
+  initialCards.splice(Math.abs(index - (photo_rendered.length - 1)), 1);
 
   // отрисовываем карточки по обновленному массиву
   photo_cards_render();
 }
 
+// функция отправки формы добавления места
 function new_place_form_submit(evt) {
   evt.preventDefault();
-  let place_array = {};
+// записываем элемент с ключами name и link в конец массива
+  // он реверсирован, потому карточка будет первой
+  initialCards.push({name: place_name.value, link: place_link.value});
 
-  let name = place_name.value;
-  let link = place_link.value;
-  console.log(place_array);
-
-  initialCards.unshift({name: name, link: link});
-
-  console.log(initialCards);
   // отрисовываем карточки по обновленному массиву
   photo_cards_render();
+
+  /* Закрыть всплывашку добавления карточки - удаляем класс popup_opened */
+  new_place_popup.classList.remove('popup_opened');
+  /* Очистить инпуты в всплывашке добавления карточки */
+  clear_inputs(new_place_popup);
 }
 
 /// ПРОСЛУШИВАТЕЛИ ///
@@ -287,4 +292,3 @@ document.addEventListener('DOMContentLoaded', function () {
   // отрисовываем карточки
   photo_cards_render();
 });
-
