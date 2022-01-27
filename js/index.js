@@ -165,6 +165,7 @@ function photo_cards_render() {
   const photo_cards_string_create = ({name, link}) =>
     `<li>
         <article class="photo-card">
+          <button class="photo-card__delete button" type="button"></button>
           <img src="${link}" class="photo-card__image" alt="${name}">
           <div class="photo-card__footer">
             <p class="photo-card__title">${name}</p>
@@ -194,6 +195,10 @@ function photo_cards_render() {
   // если константу сделать вне функции, то браузер их не увидит, т.к. до рендера карточек их нет и слушать нечего
   const photo_card_like_btns = document.querySelectorAll('.photo-card__button');
 
+  // Все кнопки удалить в галерее. Кнопок много, и клик по каждой надо слушать.
+  // если константу сделать вне функции, то браузер их не увидит, т.к. до рендера карточек их нет и слушать нечего
+  const photo_card_delete_btns = document.querySelectorAll('.photo-card__delete');
+
   // Слушаем клик по изображениям всех карточек
   photo_card_images.forEach((photo_card_image) => {
     photo_card_image.addEventListener('click', function () {
@@ -207,6 +212,31 @@ function photo_cards_render() {
       photo_like(photo_card_like_btn);
     })
   });
+
+  // Слушаем клик по кнопке удаления фотографии. Кнопок много, вешаем прослушиватель на каждую.
+  photo_card_delete_btns.forEach((photo_card_delete_btn) => {
+    photo_card_delete_btn.addEventListener('click', function () {
+      // передаем ближайшую к кнопке удаления родительскую карточку
+      photo_delete(photo_card_delete_btn.closest('.photo-card'));
+    })
+  });
+}
+
+// функция удаления карточки
+// с расчетом на хранение массива карточек на сервере в будущем
+function photo_delete(element) {
+  // карточки галереи - photo-cards внутри секции gallery
+  // после рендеринга
+  const photo_rendered = document.querySelectorAll('.gallery .photo-cards .photo-card');
+
+  // получаем индекс элемента массива photo_rendered, для которого нажали удалить
+  let index = Object.keys(photo_rendered).find(key => photo_rendered[key] === element);
+
+  // из массива initialCards удаляем элемент по id
+  initialCards.splice(index, 1);
+
+  // отрисовываем карточки по обновленному массиву
+  photo_cards_render();
 }
 
 /// ПРОСЛУШИВАТЕЛИ ///
@@ -233,6 +263,5 @@ add_place_btn.addEventListener('click', function () {
 document.addEventListener('DOMContentLoaded', function () {
   // отрисовываем карточки
   photo_cards_render();
-
 });
 

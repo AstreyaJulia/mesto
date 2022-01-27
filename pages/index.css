@@ -23,6 +23,7 @@
 @import "../blocks/photo-card/__button/photo-card__button.css";
 @import "../blocks/photo-card/__button/_active/photo-card__button_active.css";
 @import "../blocks/photo-card/__image/photo-card__image.css";
+@import "../blocks/photo-card/__delete/photo-card__delete.css";
 
 @import "../blocks/footer/footer.css";
 @import "../blocks/footer/__copyright/footer__copyright.css";
