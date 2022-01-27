@@ -37,11 +37,38 @@ const popup_close_buttons = document.querySelectorAll(".popup__close-button");
 
 /// * Карточки в галерее *///
 
-// изображения в карточках галереи, нужны именно изображения, иначе будет срабатывать там, где не надо
-const photo_card_images = document.querySelectorAll('.photo-card__image');
+/* Массив карточек */
 
-// Все кнопки лайк в галерее. Кнопок много, и клик по каждой надо слушать.
-const photo_card_like_btns = document.querySelectorAll('.photo-card__button');
+const initialCards = [
+  {
+    name: 'Исландия',
+    link: 'images/photos/iceland_1.jpg'
+  },
+  {
+    name: 'Буковель, Украина',
+    link: 'images/photos/bukovel_1.jpg'
+  },
+  {
+    name: 'Исландия',
+    link: 'images/photos/iceland_2.jpg'
+  },
+  {
+    name: 'Аризона, США',
+    link: 'images/photos/arizona_1.jpg'
+  },
+  {
+    name: 'Торонто, Канада',
+    link: 'images/photos/toronto_1.jpg'
+  },
+  {
+    name: 'Тронхейм, Норвегия',
+    link: 'images/photos/trondheim_1.jpg'
+  }
+];
+
+// контейнер карточек галереи - контейнер photo-cards внутри секции gallery
+const photo_cards = document.querySelector('.gallery .photo-cards');
+
 
 ///* Всплывашка просмотра изображений *///
 const image_view_popup = document.querySelector(".popup_view_image");
@@ -130,6 +157,58 @@ function profile_form_submit(evt) {
   clear_inputs(profile_edit_popup);
 }
 
+// отрисовка карточек в галерее
+function photo_cards_render() {
+
+  // константа-шаблон в которую вставляются элементы из массива карточек
+  // аргументы name, link - это ключи массива, те, что нужны в данной константе
+  const photo_cards_string_create = ({name, link}) =>
+    `<li>
+        <article class="photo-card">
+          <img src="${link}" class="photo-card__image" alt="${name}">
+          <div class="photo-card__footer">
+            <p class="photo-card__title">${name}</p>
+            <button class="photo-card__button button" type="button"></button>
+          </div>
+        </article>
+      </li>
+    `;
+
+// очищаем контейнер перед отрисовкой
+  photo_cards.innerHTML = '';
+
+// из массива карточек initialCards делаем элемент из карточек (константа photo_cards_string) по шаблону,
+// записанному в константе photo_cards_string_create, соединяя элементы между собой элементом '' (join(''))
+// аргумент card - отдельный элемент массива initialCards
+  const photo_cards_string = initialCards.map((card) =>
+    photo_cards_string_create(card)).join('');
+
+// вставляем созданный элемент из карточек в контейнер photo_cards
+  photo_cards.insertAdjacentHTML('beforeend', photo_cards_string);
+
+  // изображения в карточках галереи, нужны именно изображения, иначе будет срабатывать там, где не надо
+  // если константу сделать вне функции, то браузер их не увидит, т.к. до рендера карточек их нет и слушать нечего
+  const photo_card_images = document.querySelectorAll('.photo-card__image');
+
+  // Все кнопки лайк в галерее. Кнопок много, и клик по каждой надо слушать.
+  // если константу сделать вне функции, то браузер их не увидит, т.к. до рендера карточек их нет и слушать нечего
+  const photo_card_like_btns = document.querySelectorAll('.photo-card__button');
+
+  // Слушаем клик по изображениям всех карточек
+  photo_card_images.forEach((photo_card_image) => {
+    photo_card_image.addEventListener('click', function () {
+      get_image(photo_card_image);
+    })
+  });
+
+  // Слушаем клик по кнопке лайка фотографии. Кнопок много, вешаем прослушиватель на каждую.
+  photo_card_like_btns.forEach((photo_card_like_btn) => {
+    photo_card_like_btn.addEventListener('click', function () {
+      photo_like(photo_card_like_btn);
+    })
+  });
+}
+
 /// ПРОСЛУШИВАТЕЛИ ///
 
 // Слушаем клик по кнопке редактирования профиля
@@ -140,13 +219,6 @@ profile_edit_btn.addEventListener('click', function () {
   get_users_info();
 })
 
-// Слушаем клик по кнопке лайка фотографии. Кнопок много, вешаем прослушиватель на каждую.
-photo_card_like_btns.forEach((photo_card_like_btn) => {
-  photo_card_like_btn.addEventListener('click', function () {
-    photo_like(photo_card_like_btn);
-  })
-});
-
 // Слушаем отправку формы редактирования профиля
 edit_profile_form.addEventListener('submit', profile_form_submit);
 
@@ -156,9 +228,11 @@ add_place_btn.addEventListener('click', function () {
   popup_show(new_place_popup);
 })
 
-// Слушаем клик по изображениям всех карточек
-photo_card_images.forEach((photo_card_image) => {
-  photo_card_image.addEventListener('click', function () {
-    get_image(photo_card_image);
-  })
+
+// ждем загрузки DOM
+document.addEventListener('DOMContentLoaded', function () {
+  // отрисовываем карточки
+  photo_cards_render();
+
 });
+
