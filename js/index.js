@@ -32,6 +32,12 @@ const add_place_btn = document.querySelector(".profile__add-button");
 ///* Всплывашка (popup) добавления места *///
 const new_place_popup = document.querySelector(".popup_new-place");
 
+// Форма в всплывашке добавления места
+const new_place_form = new_place_popup.querySelector('.popup__form');
+
+const place_name = new_place_form.querySelector('#place_name');
+const place_link = new_place_form.querySelector('#place_url');
+
 // кнопки закрытия всплывашек на всех всплывашках
 const popup_close_buttons = document.querySelectorAll(".popup__close-button");
 
@@ -39,7 +45,7 @@ const popup_close_buttons = document.querySelectorAll(".popup__close-button");
 
 /* Массив карточек */
 
-const initialCards = [
+let initialCards = [
   {
     name: 'Исландия',
     link: 'images/photos/iceland_1.jpg'
@@ -239,6 +245,21 @@ function photo_delete(element) {
   photo_cards_render();
 }
 
+function new_place_form_submit(evt) {
+  evt.preventDefault();
+  let place_array = {};
+
+  let name = place_name.value;
+  let link = place_link.value;
+  console.log(place_array);
+
+  initialCards.unshift({name: name, link: link});
+
+  console.log(initialCards);
+  // отрисовываем карточки по обновленному массиву
+  photo_cards_render();
+}
+
 /// ПРОСЛУШИВАТЕЛИ ///
 
 // Слушаем клик по кнопке редактирования профиля
@@ -258,6 +279,8 @@ add_place_btn.addEventListener('click', function () {
   popup_show(new_place_popup);
 })
 
+// Слушаем отправку формы добавления места
+new_place_form.addEventListener('submit', new_place_form_submit);
 
 // ждем загрузки DOM
 document.addEventListener('DOMContentLoaded', function () {
