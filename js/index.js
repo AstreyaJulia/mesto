@@ -186,10 +186,10 @@ function photo_cards_render() {
 
 // из массива карточек initialCards делаем элемент из карточек (константа photo_cards_string) по шаблону,
 // записанному в константе photo_cards_string_create, соединяя элементы между собой элементом '' (join(''))
-// в обратном порядке, так как в верстке новые карточки расположены слева вверху, а старые - справа внизу
+// в верстке новые карточки расположены слева вверху, а старые - справа внизу
 // аргумент card - отдельный элемент массива initialCards
   const photo_cards_string = initialCards.map((card) =>
-    photo_cards_string_create(card)).reverse().join('');
+    photo_cards_string_create(card)).join('');
 
 // вставляем созданный элемент из карточек в контейнер photo_cards
   photo_cards.insertAdjacentHTML('beforeend', photo_cards_string);
@@ -240,10 +240,7 @@ function photo_delete(element) {
   let index = Object.keys(photo_rendered).find(key => photo_rendered[key] === element);
 
   // из массива initialCards удаляем элемент по id
-  // так как массив реверсирован, то порядок индексов будет противоположен порядку карточек,
-  // из полученного индекса вычитаем длину массива карточек (-1, т.к. индексы идут с 0),
-  // получаем абсолютное значение (избавляемся от отрицательных значений)
-  initialCards.splice(Math.abs(index - (photo_rendered.length - 1)), 1);
+  initialCards.splice(index, 1);
 
   // отрисовываем карточки по обновленному массиву
   photo_cards_render();
