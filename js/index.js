@@ -87,7 +87,7 @@ function popup_show(popup) {
   popup.classList.add('popup_opened');
 }
 
-// Универсальная функция-закрывашка всплывашек
+// Универсальная функция-закрывашка всплывашек, если что-то ввели, а потом закрыли
 popup_close_buttons.forEach((popup_close_button) => {
 // для каждой кнопки закрытия всплывашки делаем прослушиватель
   popup_close_button.addEventListener('click', function () {
@@ -95,10 +95,13 @@ popup_close_buttons.forEach((popup_close_button) => {
     let popup = popup_close_button.closest('.popup');
     // закрываем всплывашку, удаляем класс popup_opened
     popup.classList.remove('popup_opened');
-    // если всплывашка с классом popup_new-place или popup_edit_profile, очищаем инпуты
-    // хотя можно присваивать таким всплывашкам отельный класс и не перечислять в условии
-    if (popup.classList.contains('popup_new-place') || popup.classList.contains('popup_new-place')) {
-      clear_inputs(popup);
+    // если у всплывашки есть инпуты, то они очищаются
+    let inputs = popup.querySelectorAll('input');
+    if (inputs) {
+      // Очищаем каждый инпут
+      inputs.forEach((input) => {
+        input.value = "";
+      });
     }
   })
 })
