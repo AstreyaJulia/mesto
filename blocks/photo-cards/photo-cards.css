@@ -1,5 +1,6 @@
 .photo-cards {
   max-width: 880px;
+  min-height: 366px; /* чтобы футер не взлетал вверх если нет карточек */
   list-style: none;
   padding: 0;
   margin: 0 auto;
