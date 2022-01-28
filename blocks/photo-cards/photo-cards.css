@@ -1,7 +1,8 @@
 .photo-cards {
+  max-width: 880px;
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 0 auto;
   display: flex;
   flex-direction: row;
   flex-flow: row-reverse wrap-reverse;
@@ -11,7 +12,19 @@
 
 @media screen and (max-width: 1023px) {
   .photo-cards {
-    padding: 66px 19px 0;
+    padding-top: 66px;
+  }
+}
+
+@media screen and (max-width: 933px) {
+  .photo-cards {
+    max-width: 581px;
+  }
+}
+
+@media screen and (max-width: 635px) {
+  .photo-cards {
+    max-width: 282px;
   }
 }
 
