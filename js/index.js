@@ -167,7 +167,7 @@ function createCard(item) {
 
 // функция удаления карточки
 function deletePhoto(element) {
-  element.remove();
+  element.closest('li').remove();
 }
 
 // функция отправки формы добавления места
