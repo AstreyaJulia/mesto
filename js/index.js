@@ -15,8 +15,8 @@ let profileSubtitle = document.querySelector(".profile__subtitle");
 const profileEditPopup = document.querySelector(".popup_edit_profile");
 
 // Инпуты в всплывашке редактирования профиля
-let popupTitleInput = profileEditPopup.querySelector('#profile_name');
-let popupSubtitleInput = profileEditPopup.querySelector('#profile_title');
+const popupTitleInput = profileEditPopup.querySelector('#profile_name');
+const popupSubtitleInput = profileEditPopup.querySelector('#profile_title');
 
 // Форма в всплывашке редактирования профиля
 const editProfileForm = profileEditPopup.querySelector('.popup__form');
@@ -41,7 +41,7 @@ const popupCloseButtons = document.querySelectorAll(".popup__close-button");
 
 /* Массив карточек */
 
-let initialCards = [
+const initialCards = [
   {
     name: 'Исландия',
     link: 'images/photos/iceland_1.jpg'
@@ -68,8 +68,18 @@ let initialCards = [
   }
 ];
 
+// шаблон карточки
+const cardTeplate = document.querySelector('#photo-card').content;
+
+// контейнер карточек галереи - контейнер photo-cards внутри секции gallery
+const photoCards = document.querySelector('.gallery .photo-cards');
+
+
 ///* Всплывашка просмотра изображений *///
 const imageViewPopup = document.querySelector(".popup_view_image");
+
+const imageViewPopupImage = imageViewPopup.querySelector(".popup__image");
+const imageViewPopupCaption = imageViewPopup.querySelector(".popup__caption");
 
 ///* ФУНКЦИИ *///
 
@@ -88,16 +98,10 @@ function closePopup(popup) {
 // Очистить все инпуты после закрытия всплывашки
 // Аргумент popup - элемент popup
 function clearInputs(popup) {
-  // ищем все input в popup который передан аргументом
-  let inputs = popup.querySelectorAll('input');
-  // Очищаем каждый инпут
-  inputs.forEach((input) => {
-    input.value = "";
-  });
+  popup.querySelector('form').reset();
 }
 
 // Получить сведения о пользователе
-// в данный момент - из профиля, в будущем - от сервера
 function getUsersInfo() {
   popupTitleInput.value = profileTitle.textContent;
   popupSubtitleInput.value = profileSubtitle.textContent;
@@ -106,27 +110,16 @@ function getUsersInfo() {
 // Кнопка Лайк на карточках фотографий
 // Аргумент button - нажатая кнопка
 function likePhoto(button) {
-  // Если нажата
-  if (button.classList.contains("photo-card__button_active")) {
-    /* Отправляем данные на сервер с id фото */
-    // ...
-    /* Удаляем класс */
-    button.classList.remove("photo-card__button_active")
-  } else {
-    /* Отправляем данные на сервер с id фото */
-    // ...
-    /* Добавляем класс */
-    button.classList.add("photo-card__button_active")
-  }
+  button.classList.toggle("photo-card__button_active");
 }
 
 // записываем свойства нажатой картинки в всплывашку:
 // src - из src нажатой картинки,
 // alt и описание изображения - из photo-card__title ближайшего родительского photo-card
 function getImage(photo) {
-  document.querySelector(".popup__image").src = photo.src;
-  document.querySelector(".popup__image").alt = photo.closest('.photo-card').querySelector('.photo-card__title').innerHTML;
-  document.querySelector(".popup__caption").innerHTML = photo.closest('.photo-card').querySelector('.photo-card__title').innerHTML;
+  imageViewPopupImage.src = photo.src;
+  imageViewPopupImage.alt = photo.closest('.photo-card').querySelector('.photo-card__title').textContent;
+  imageViewPopupCaption.textContent = photo.closest('.photo-card').querySelector('.photo-card__title').textContent;
   showPopup(imageViewPopup);
 }
 
@@ -140,103 +133,49 @@ function submitProfileForm(evt) {
 
   /* Закрыть всплывашку профиля - удаляем класс popup_opened */
   closePopup(profileEditPopup);
-  /* Очистить инпуты в всплывашке редактирования профиля */
-  clearInputs(profileEditPopup)
 }
 
-// отрисовка карточек в галерее
-function renderPhotoCards() {
+// создаем карточку
+// аргумент item - элемент из массива {name: название, link: ссылка}
+function createCard(item) {
+  // в шаблоне берем весь элемент li
+  const cardElement = cardTeplate.querySelector('li').cloneNode(true);
 
-  // контейнер карточек галереи - контейнер photo-cards внутри секции gallery
-  const photoCards = document.querySelector('.gallery .photo-cards');
+  // записываем в шаблон значения из элемента массива
+  cardElement.querySelector('.photo-card__image').src = item.link;
+  cardElement.querySelector('.photo-card__image').alt = item.name;
+  cardElement.querySelector('.photo-card__title').textContent = item.name;
 
-  // константа-шаблон в которую вставляются элементы из массива карточек
-  // аргументы name, link - это ключи массива, те, что нужны в данной константе
-  const createPhotoCardsString = ({name, link}) =>
-    `<li>
-        <article class="photo-card">
-          <button class="photo-card__delete button" type="button"></button>
-          <img src="${link}" class="photo-card__image" alt="${name}">
-          <div class="photo-card__footer">
-            <p class="photo-card__title">${name}</p>
-            <button class="photo-card__button button" type="button"></button>
-          </div>
-        </article>
-      </li>
-    `;
+  // прослушиватель нажатия на картинку
+  cardElement.querySelector('.photo-card__image').addEventListener('click', function () {
+    getImage(cardElement.querySelector('.photo-card__image'));
+  })
 
-// очищаем контейнер перед отрисовкой
-  photoCards.innerHTML = '';
+  // прослушиватель лайка
+  cardElement.querySelector('.photo-card__button').addEventListener('click', function () {
+    likePhoto(cardElement.querySelector('.photo-card__button'));
+  })
 
-// из массива карточек initialCards делаем элемент из карточек (константа photoCardsString) по шаблону,
-// записанному в константе createPhotoCardsString, соединяя элементы между собой элементом '' (join(''))
-// аргумент card - отдельный элемент массива initialCards
-  const photoCardsString = initialCards.map((card) =>
-    createPhotoCardsString(card)).join('');
+  // прослушиватель удаления
+  cardElement.querySelector('.photo-card__delete').addEventListener('click', function () {
+    deletePhoto(cardElement.querySelector('.photo-card'));
+  })
 
-// вставляем созданный элемент из карточек в контейнер photoCards
-  photoCards.insertAdjacentHTML('beforeend', photoCardsString);
-
-  // изображения в карточках галереи, нужны именно изображения, иначе будет срабатывать там, где не надо
-  // если константу сделать вне функции, то браузер их не увидит, т.к. до рендера карточек их нет и слушать нечего
-  const photoCardImages = document.querySelectorAll('.photo-card__image');
-
-  // Все кнопки лайк в галерее. Кнопок много, и клик по каждой надо слушать.
-  // если константу сделать вне функции, то браузер их не увидит, т.к. до рендера карточек их нет и слушать нечего
-  const photoCardLikeButtons = document.querySelectorAll('.photo-card__button');
-
-  // Все кнопки удалить в галерее. Кнопок много, и клик по каждой надо слушать.
-  // если константу сделать вне функции, то браузер их не увидит, т.к. до рендера карточек их нет и слушать нечего
-  const photoCardDeleteButtons = document.querySelectorAll('.photo-card__delete');
-
-  // Слушаем клик по изображениям всех карточек
-  photoCardImages.forEach((photoCardImage) => {
-    photoCardImage.addEventListener('click', function () {
-      getImage(photoCardImage);
-    })
-  });
-
-  // Слушаем клик по кнопке лайка фотографии. Кнопок много, вешаем прослушиватель на каждую.
-  photoCardLikeButtons.forEach((photoCardLikeButton) => {
-    photoCardLikeButton.addEventListener('click', function () {
-      likePhoto(photoCardLikeButton);
-    })
-  });
-
-  // Слушаем клик по кнопке удаления фотографии. Кнопок много, вешаем прослушиватель на каждую.
-  photoCardDeleteButtons.forEach((photoCardDeleteButton) => {
-    photoCardDeleteButton.addEventListener('click', function () {
-      // передаем ближайшую к кнопке удаления родительскую карточку
-      deletePhoto(photoCardDeleteButton.closest('.photo-card'));
-      // отрисовываем карточки по обновленному массиву
-      renderPhotoCards();
-    })
-  });
+  // возвращаем полностью созданный элемент карточки с прослушивателями
+  return cardElement
 }
 
 // функция удаления карточки
-// с расчетом на хранение массива карточек на сервере в будущем
 function deletePhoto(element) {
-  // карточки галереи - photo-cards внутри секции gallery
-  // после рендеринга
-  const photoRendered = document.querySelectorAll('.gallery .photo-cards .photo-card');
-
-  // получаем индекс элемента массива photoRendered, для которого нажали удалить
-  let index = Object.keys(photoRendered).find(key => photoRendered[key] === element);
-
-  // из массива initialCards удаляем элемент по id
-  initialCards.splice(index, 1);
+  element.remove();
 }
 
 // функция отправки формы добавления места
 function submitNewPlaceForm(evt) {
   evt.preventDefault();
-// записываем элемент с ключами name и link в конец массива
-  // он реверсирован, потому карточка будет первой
-  initialCards.push({name: placeName.value, link: placeLink.value});
 
-  // отрисовываем карточки по обновленному массиву
- renderPhotoCards();
+// добавляем карточку
+  photoCards.prepend(createCard({name: placeName.value, link: placeLink.value}))
 
   /* Закрыть всплывашку добавления карточки - удаляем класс popup_opened */
   closePopup(newPlacePopup)
@@ -254,11 +193,6 @@ popupCloseButtons.forEach((popupCloseButton) => {
     let popup = popupCloseButton.closest('.popup');
     // закрываем всплывашку, удаляем класс popup_opened
     closePopup(popup);
-    // если у всплывашки есть инпуты, то они очищаются
-    let inputs = popup.querySelectorAll('input');
-    if (inputs) {
-      clearInputs(popup);
-    }
   })
 })
 
@@ -273,15 +207,6 @@ profileEditButton.addEventListener('click', function () {
 // Слушаем отправку формы редактирования профиля
 editProfileForm.addEventListener('submit', submitProfileForm);
 
-// слушаем нажатие enter в инпутах формы
-editProfileForm.querySelectorAll('input').forEach((input) => {
-  input.addEventListener('keydown', function (evt) {
-    if (evt.key === 'Enter') {
-      submitProfileForm(evt);
-    }
-  })
-})
-
 // Слушаем клик по кнопке Добавить место
 addPlaceButton.addEventListener('click', function () {
   /* Открыть всплывашку добавления места */
@@ -291,17 +216,10 @@ addPlaceButton.addEventListener('click', function () {
 // Слушаем отправку формы добавления места
 newPlaceForm.addEventListener('submit', submitNewPlaceForm);
 
-// слушаем нажатие enter в инпутах формы
-newPlaceForm.querySelectorAll('input').forEach((input) => {
-  input.addEventListener('keydown', function (evt) {
-    if (evt.key === 'Enter') {
-      submitNewPlaceForm(evt);
-    }
-  })
-})
-
 // ждем загрузки DOM
 document.addEventListener('DOMContentLoaded', function () {
-  // отрисовываем карточки
-  renderPhotoCards();
+  // отрисовываем карточки в галерее
+  initialCards.forEach((item) => {
+    photoCards.prepend(createCard(item));
+  })
 });

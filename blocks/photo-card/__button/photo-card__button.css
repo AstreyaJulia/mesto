@@ -8,4 +8,5 @@
   object-fit: contain;
   border: none;
   padding: 0;
+  flex-shrink: 0;
 }

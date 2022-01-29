@@ -1,31 +1,17 @@
 .photo-cards {
-  max-width: 880px;
-  min-height: 366px; /* чтобы футер не взлетал вверх если нет карточек */
   list-style: none;
   padding: 0;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: row;
-  flex-flow: row-reverse wrap-reverse;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 282px);
   row-gap: 20px;
   column-gap: 17px;
+  justify-content: center;
 }
 
 @media screen and (max-width: 1023px) {
   .photo-cards {
-    padding-top: 66px;
-  }
-}
-
-@media screen and (max-width: 933px) {
-  .photo-cards {
-    max-width: 581px;
-  }
-}
-
-@media screen and (max-width: 635px) {
-  .photo-cards {
-    max-width: 282px;
+    padding: 66px 19px 0;
   }
 }
 
