@@ -6,8 +6,8 @@
 const profileEditButton = document.querySelector(".profile__button");
 
 // Информация о пользователе из профиля
-let profileTitle = document.querySelector(".profile__title");
-let profileSubtitle = document.querySelector(".profile__subtitle");
+const profileTitle = document.querySelector(".profile__title");
+const profileSubtitle = document.querySelector(".profile__subtitle");
 
 ///* Всплывашка (popup) редактирования профиля *///
 
@@ -74,7 +74,6 @@ const cardTeplate = document.querySelector('#photo-card').content;
 // контейнер карточек галереи - контейнер photo-cards внутри секции gallery
 const photoCards = document.querySelector('.gallery .photo-cards');
 
-
 ///* Всплывашка просмотра изображений *///
 const imageViewPopup = document.querySelector(".popup_view_image");
 
@@ -113,13 +112,11 @@ function likePhoto(button) {
   button.classList.toggle("photo-card__button_active");
 }
 
-// записываем свойства нажатой картинки в всплывашку:
-// src - из src нажатой картинки,
-// alt и описание изображения - из photo-card__title ближайшего родительского photo-card
+// записываем свойства нажатой картинки в всплывашку
 function getImage(photo) {
   imageViewPopupImage.src = photo.src;
-  imageViewPopupImage.alt = photo.closest('.photo-card').querySelector('.photo-card__title').textContent;
-  imageViewPopupCaption.textContent = photo.closest('.photo-card').querySelector('.photo-card__title').textContent;
+  imageViewPopupImage.alt = photo.alt;
+  imageViewPopupCaption.textContent = photo.alt;
   showPopup(imageViewPopup);
 }
 
@@ -141,24 +138,27 @@ function createCard(item) {
   // в шаблоне берем весь элемент li
   const cardElement = cardTeplate.querySelector('li').cloneNode(true);
 
+  // элемент изображения
+  const cardImage = cardElement.querySelector('.photo-card__image');
+
   // записываем в шаблон значения из элемента массива
-  cardElement.querySelector('.photo-card__image').src = item.link;
-  cardElement.querySelector('.photo-card__image').alt = item.name;
+  cardImage.src = item.link;
+  cardImage.alt = item.name;
   cardElement.querySelector('.photo-card__title').textContent = item.name;
 
   // прослушиватель нажатия на картинку
-  cardElement.querySelector('.photo-card__image').addEventListener('click', function () {
-    getImage(cardElement.querySelector('.photo-card__image'));
+  cardImage.addEventListener('click', function () {
+    getImage(this);
   })
 
   // прослушиватель лайка
-  cardElement.querySelector('.photo-card__button').addEventListener('click', function () {
-    likePhoto(cardElement.querySelector('.photo-card__button'));
+  cardElement.querySelector('.photo-card__button').addEventListener('click', function (evt) {
+    likePhoto(evt.target); // можно и this
   })
 
   // прослушиватель удаления
   cardElement.querySelector('.photo-card__delete').addEventListener('click', function () {
-    deletePhoto(cardElement.querySelector('.photo-card'));
+    deletePhoto(cardElement);
   })
 
   // возвращаем полностью созданный элемент карточки с прослушивателями
@@ -167,7 +167,7 @@ function createCard(item) {
 
 // функция удаления карточки
 function deletePhoto(element) {
-  element.closest('li').remove();
+  element.remove();
 }
 
 // функция отправки формы добавления места
@@ -189,10 +189,8 @@ function submitNewPlaceForm(evt) {
 popupCloseButtons.forEach((popupCloseButton) => {
 // для каждой кнопки закрытия всплывашки делаем прослушиватель
   popupCloseButton.addEventListener('click', function () {
-    // локальная переменная для всплывашки, ищет ближнюю родительскую, с классом popup
-    let popup = popupCloseButton.closest('.popup');
     // закрываем всплывашку, удаляем класс popup_opened
-    closePopup(popup);
+    closePopup(popupCloseButton.closest('.popup'));
   })
 })
 
