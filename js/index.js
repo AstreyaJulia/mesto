@@ -147,13 +147,13 @@ function createCard(item) {
   cardElement.querySelector('.photo-card__title').textContent = item.name;
 
   // прослушиватель нажатия на картинку
-  cardImage.addEventListener('click', function () {
-    getImage(this);
+  cardImage.addEventListener('click', function (evt) {
+    getImage(evt.target);
   })
 
   // прослушиватель лайка
   cardElement.querySelector('.photo-card__button').addEventListener('click', function (evt) {
-    likePhoto(evt.target); // можно и this
+    likePhoto(evt.target);
   })
 
   // прослушиватель удаления
