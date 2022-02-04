@@ -56,8 +56,16 @@
     <button class="popup__close-button button"></button>
     <h2 class="popup__title">Редактировать профиль</h2>
     <form class="popup__form" name="profileForm">
-      <input class="popup__input" type="text" placeholder="Имя" value="" name="name" id="profile_name" required>
-      <input class="popup__input" type="text" placeholder="Подпись" value="" name="title" id="profile_title">
+      <fieldset class="popup__fieldset">
+        <label class="popup__input-group" for="profile_name">
+          <input class="popup__input" type="text" placeholder="Имя" value="" name="name" id="profile_name" required minlength="2" maxlength="40">
+          <span class="popup__input-error" id="profile_name-error"></span>
+        </label>
+        <label class="popup__input-group" for="profile_title">
+          <input class="popup__input" type="text" placeholder="Подпись" value="" name="title" id="profile_title" required minlength="2" maxlength="400">
+          <span class="popup__input-error" id="profile_title-error"></span>
+        </label>
+      </fieldset>
       <button class="popup__submit" type="submit">Сохранить</button>
     </form>
   </div>
@@ -69,9 +77,17 @@
     <button class="popup__close-button button"></button>
     <h2 class="popup__title">Новое место</h2>
     <form class="popup__form" name="newPlaceForm">
-      <input class="popup__input" type="text" placeholder="Имя" value="" name="name" id="place_name" required>
-      <input class="popup__input" type="url" placeholder="Ссылка на место" value="" name="title" id="place_url"
-             required>
+      <fieldset class="popup__fieldset">
+        <label class="popup__input-group" for="place_name">
+          <input class="popup__input" type="text" placeholder="Имя" value="" name="name" id="place_name" required>
+          <span class="popup__input-error" id="place_name-error"></span>
+        </label>
+        <label class="popup__input-group" for="place_url">
+          <input class="popup__input" type="url" placeholder="Ссылка на место" value="" name="title" id="place_url"
+                 required>
+          <span class="popup__input-error" id="place_url-error"></span>
+        </label>
+      </fieldset>
       <button class="popup__submit" type="submit">Создать</button>
     </form>
   </div>
