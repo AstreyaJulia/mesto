@@ -9,6 +9,7 @@
  * @param {string} inputErrorClass - класс, подсвечивающий поле с ошибками
  * @param {string} errorClass - класс, делающий ошибку видимой
  */
+/** @type {Object} */
 const validationSettings = {
   formSelector: '.popup__form',
   inputSelector: '.popup__input',
