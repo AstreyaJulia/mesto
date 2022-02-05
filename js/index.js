@@ -1,5 +1,8 @@
 'use strict';
 
+// Все всплывашки на странице
+const popups = document.querySelectorAll('.popup:not(:first-child)');
+
 ///* Профиль *///
 
 // Кнопка редактирования профиля
@@ -83,22 +86,26 @@ const imageViewPopupCaption = imageViewPopup.querySelector(".popup__caption");
 
 ///* ФУНКЦИИ *///
 
-// Открывашка всплывашки
+// Открывашка всплывашки, добавление прослушивателя нажатия на ESC
 // Аргумент popup - элемент popup
 function showPopup(popup) {
   popup.classList.add('popup_opened');
+  window.addEventListener('keydown', closeESC)
 }
 
-// Закрывашка всплывашки
+// Закрывашка всплывашки, удаление прослушивателя нажатия на ESC
 // Аргумент popup - элемент popup
 function closePopup(popup) {
   popup.classList.remove('popup_opened');
+  window.removeEventListener('keydown', closeESC)
 }
 
 // Очистить все инпуты после закрытия всплывашки
 // Аргумент popup - элемент popup
 function clearInputs(popup) {
-  popup.querySelector('form').reset();
+  if (popup.querySelector('input')) {
+    popup.querySelector('form').reset();
+  }
 }
 
 // Получить сведения о пользователе
@@ -183,6 +190,18 @@ function submitNewPlaceForm(evt) {
   clearInputs(newPlacePopup)
 }
 
+// ф-я закрытия всплывашки по нажатию ESC
+function closeESC(evt) {
+  if (evt.key === "Escape") {
+    // Ищем открытую всплывашку с классом popup_opened, больше 1 их точно не будет
+    const popup = document.querySelector('.popup_opened');
+    // Закрываем всплывашку
+    closePopup(popup);
+    // Если у всплывашки есть форма, очищаем инпуты
+    clearInputs(popup);
+  }
+}
+
 /// ПРОСЛУШИВАТЕЛИ ///
 
 // Универсальная функция-закрывашка всплывашек, если что-то ввели, а потом закрыли
@@ -193,6 +212,8 @@ popupCloseButtons.forEach((popupCloseButton) => {
     let popup = popupCloseButton.closest('.popup');
     // закрываем всплывашку, удаляем класс popup_opened
     closePopup(popup);
+    // Если у всплывашки есть форма, очищаем инпуты
+    clearInputs(popup);
   })
 })
 
@@ -215,6 +236,17 @@ addPlaceButton.addEventListener('click', function () {
 
 // Слушаем отправку формы добавления места
 newPlaceForm.addEventListener('submit', submitNewPlaceForm);
+
+// Слушалка нажатия на оверлей, закрывает всплывашку и очищает ее форму (если есть)
+popups.forEach((popup) => {
+  popup.addEventListener('click', function (evt) {
+    if (evt.target === popup) {
+      closePopup(evt.target);
+      // Если у всплывашки есть форма, очищаем инпуты
+      clearInputs(popup);
+    }
+  })
+})
 
 // ждем загрузки DOM
 document.addEventListener('DOMContentLoaded', function () {
