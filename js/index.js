@@ -104,6 +104,12 @@ function closePopup(popup) {
 function clearInputs(popup) {
   if (popup.querySelector('input')) {
     popup.querySelector('form').reset();
+    // Поля пустые - блокируем кнопку отправки формы
+    const submitButton = popup.querySelector('.popup__submit')
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.classList.add(validationSettings.inactiveButtonClass);
+    }
   }
 }
 
@@ -187,7 +193,7 @@ function submitNewPlaceForm(evt) {
   /* Закрыть всплывашку добавления карточки - удаляем класс popup_opened */
   closePopup(newPlacePopup)
   /* Очистить инпуты в всплывашке добавления карточки */
-  clearInputs(newPlacePopup)
+  setTimeout(clearInputs, 350, newPlacePopup); // тайм-аут, потому что заметна очистка формы при закрытии
 }
 
 // ф-я закрытия всплывашки по нажатию ESC
@@ -198,7 +204,7 @@ function closeESC(evt) {
     // Закрываем всплывашку
     closePopup(popup);
     // Если у всплывашки есть форма, очищаем инпуты
-    clearInputs(popup);
+    setTimeout(clearInputs, 350, popup); // тайм-аут, потому что заметна очистка формы при закрытии
   }
 }
 
@@ -213,7 +219,7 @@ popupCloseButtons.forEach((popupCloseButton) => {
     // закрываем всплывашку, удаляем класс popup_opened
     closePopup(popup);
     // Если у всплывашки есть форма, очищаем инпуты
-    clearInputs(popup);
+    setTimeout(clearInputs, 350, popup); // тайм-аут, потому что заметна очистка формы при закрытии
   })
 })
 
@@ -243,7 +249,7 @@ popups.forEach((popup) => {
     if (evt.target === popup) {
       closePopup(evt.target);
       // Если у всплывашки есть форма, очищаем инпуты
-      clearInputs(popup);
+      setTimeout(clearInputs, 350, popup); // тайм-аут, потому что заметна очистка формы при закрытии
     }
   })
 })
