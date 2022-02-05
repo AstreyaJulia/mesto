@@ -1,65 +1,87 @@
 'use strict';
 
-// настройки валидации
+/**
+ * Настройки валидации
+ * @param {string} formSelector - класс формы
+ * @param {string} inputSelector - класс инпута
+ * @param {string} submitButtonSelector - класс кнопки отправки формы
+ * @param {string} inactiveButtonClass - класс, к-рый делает кнопку отправки формы заблокированной
+ * @param {string} inputErrorClass - класс, подсвечивающий поле с ошибками
+ * @param {string} errorClass - класс, делающий ошибку видимой
+ */
 const validationSettings = {
-  // класс формы
   formSelector: '.popup__form',
-  //класс инпута
   inputSelector: '.popup__input',
-  // класс кнопки отправки формы
   submitButtonSelector: '.popup__submit',
-  // класс, к-рый делает кнопку отправки формы заблокированной
   inactiveButtonClass: 'popup__submit_disabled',
-  // класс, подсвечивающий поле с ошибками
   inputErrorClass: 'popup__input_type_error',
-  // класс, делающий ошибку видимой
   errorClass: 'popup__error_visible'
 };
 
-// Ф-я включающая/выключающая ошибку валидации инпута
-// Аргументы:
-// input - валидируемый инпут,  form - элемент формы
-// message - сообщение об ошибке, если нужно скрыть, то передаем ''
-// mode - переключатель режимов: 'show' - показать ошибку, 'hide' - скрыть ошибку
-function switchInputError(input, form, message, mode) {
 
-  // Сообщение об ошибке для инпута (создается по id соседнего инпута через <span>)
+/**
+ * Включение ошибки валидации инпута
+ * @param {HTMLInputElement} input - валидируемый инпут
+ * @param {HTMLFormElement} form - элемент формы
+ * @param {string} message - сообщение об ошибке
+ */
+function showInputError(input, form, message) {
+
+  /** Сообщение об ошибке для инпута (создается по id соседнего инпута через <span>) */
+  /** @type {HTMLElement} */
   const error = form.querySelector(`#${input.id}-error`);
 
-  // Записываем cообщение об ошибке
+  /** Сообщение об ошибке для инпута (создается по id соседнего инпута через <span>) */
+  /** @type {string} */
   error.textContent = message;
 
-  // Переключатель режимов
-  switch (mode) {
-
-      // показать ошибку, добавляем классы инпуту и ошибке
-    case 'show':
-      input.classList.add(validationSettings.inputErrorClass);
-      error.classList.add(validationSettings.errorClass);
-      break;
-
-      // скрыть ошибку, удаляем классы инпута и ошибки
-    case 'hide':
-      input.classList.remove(validationSettings.inputErrorClass);
-      error.classList.remove(validationSettings.errorClass);
-      break;
-  }
+  /** показать ошибку, добавляем классы инпуту и ошибке */
+  input.classList.add(validationSettings.inputErrorClass);
+  error.classList.add(validationSettings.errorClass);
 }
 
-// Ф-я валидации инпута
-// аргумент form - элемент формы
-// input - инпут
+
+/**
+ * Выключение ошибки валидации инпута
+ * @param {HTMLInputElement} input - валидируемый инпут
+ * @param {HTMLFormElement} form - элемент формы
+ */
+function hideInputError(input, form) {
+
+  /** Сообщение об ошибке для инпута (создается по id соседнего инпута через <span>) */
+  /** @type {HTMLElement} */
+  const error = form.querySelector(`#${input.id}-error`);
+
+  /** Записываем cообщение об ошибке */
+  /** @type {string} */
+  error.textContent = "";
+
+  /** скрыть ошибку, удаляем классы у инпута и ошибки */
+  input.classList.remove(validationSettings.inputErrorClass);
+  error.classList.remove(validationSettings.errorClass);
+}
+
+
+/**
+ * Валидация инпута
+ * @param {HTMLInputElement} input - валидируемый инпут
+ * @param {HTMLFormElement} form - элемент формы
+ */
 function validateInput(form, input) {
-  // Если инпут не прошел валидацию (?) показывает ошибку, иначе (:) убирает ошибку
-  !input.validity.valid ? switchInputError(input, form, input.validationMessage, 'show') : switchInputError(input, form, '', 'hide');
+
+  /** Если инпут не прошел валидацию (?) показывает ошибку, иначе (:) убирает ошибку */
+  !input.validity.valid ? showInputError(input, form, input.validationMessage) : hideInputError(input, form);
 }
 
-// Переключатель состояния кнопки отправки формы
-// аргумент inputArray - коллекция валидируемых инпутов,
-// submitButton - кнопка отправки формы
+
+/**
+ * Переключатель состояния кнопки отправки формы
+ * @param {HTMLCollection} inputArray - коллекция валидируемых инпутов
+ * @param {HTMLButtonElement} submitButton - кнопка отправки формы
+ */
 function switchSubmitButton(inputArray, submitButton) {
-  // Фильтруем массив инпутов, если валидацию прошел один или ни одного инпута, то
-  // кнопка блокируется
+
+  /** Фильтруем массив инпутов, если валидацию прошел один или ни одного инпута, то кнопка блокируется */
   if (Array.from(inputArray).filter(input => !input.validity.valid).length === 0) {
     submitButton.disabled = false;
     submitButton.classList.remove(validationSettings.inactiveButtonClass);
@@ -69,53 +91,67 @@ function switchSubmitButton(inputArray, submitButton) {
   }
 }
 
-// Создание прослушивателей
-// аргумент form - элемент формы, на которую вешаем прослушиватели
+
+/**
+ * Создание прослушивателей
+ * @param {HTMLFormElement} form - элемент формы, на которую вешаем прослушиватели
+ */
 function setInputEvtListeners(form) {
 
-  // Коллекция инпутов в форме
+  /** Коллекция инпутов в форме */
+  /** @type {HTMLCollection} */
   const inputArray = form.querySelectorAll(validationSettings.inputSelector);
 
-  // Кнопка Отправить форму
+  /** Кнопка Отправить форму */
+  /** @type {HTMLButtonElement} */
   const submitButton = form.querySelector(validationSettings.submitButtonSelector);
 
-  // Валидация при открытии формы
+  /** Валидация при открытии формы */
   switchSubmitButton(inputArray, submitButton)
 
-  // Вешаем прослушиватель input каждому инпуту
-  inputArray.forEach((input) => {
+  /** Вешаем прослушиватель input каждому инпуту */
+  Array.from(inputArray).forEach((input) => {
     input.addEventListener('input', () => {
 
-      // Валидация инпута, включает/выключает ошибки
+      /** Валидация инпута, включает/выключает ошибки */
       validateInput(form, input);
 
-      // Переключалка состояния кнопки отправки формы
+      /** Переключалка состояния кнопки отправки формы */
       switchSubmitButton(inputArray, submitButton);
     });
   });
 }
 
-// Функция включения валидации
+
+/**
+ * Функция включения валидации
+ */
 function enableValidation() {
 
-  // Коллекция форм на странице
-  const formsArray = Array.from(document.querySelectorAll(validationSettings.formSelector));
+  /** Коллекция форм на странице */
+  /** @type {HTMLCollection} */
+  const formsArray = document.querySelectorAll(validationSettings.formSelector);
 
-  // Перебираем коллекцию форм, вешаем прослушиватель submit каждой форме
-  formsArray.forEach((form) => {
+  /** Перебираем коллекцию форм, вешаем прослушиватель submit каждой форме */
+  Array.from(formsArray).forEach((form) => {
 
     form.addEventListener('submit', (evt) => {
-      // отмена дефолтного действия браузера
+
+      /** отмена дефолтного действия браузера */
       evt.preventDefault();
     });
 
-    // вешаем прослушиватели на инпуты формы
+    /** вешаем прослушиватели на инпуты формы */
     setInputEvtListeners(form);
   });
 }
 
-// ждем загрузки DOM
+
+/**
+ * ждем загрузки DOM
+ */
 document.addEventListener('DOMContentLoaded', function () {
-// Включаем валидацию
+
+  /** Включаем валидацию */
   enableValidation();
 });
