@@ -1,5 +1,9 @@
 'use strict';
 
+/** Тайм-аут для очистки инпутов формы, чтобы не была заметна очистка инпутов при закрытии формы */
+/** @type {number} в миллисекундах, анимация 400 мс, тайм-аут чуть меньше, чтобы не задерживать выполнение кода */
+const clearInputsTimeout = 350;
+
 /** Все всплывашки на странице */
 /** @type {HTMLCollection} */
 const popups = document.querySelectorAll('.popup:not(:first-child)');
@@ -34,7 +38,7 @@ const editProfileForm = profileEditPopup.querySelector('.popup__form');
 
 /** Кнопка Добавить место */
 /** @type {HTMLButtonElement} */
-const addPlaceButton = document.querySelector(".profile__add-button");
+const buttonAddPlace = document.querySelector(".profile__add-button");
 
 /** Всплывашка (popup) добавления места */
 /** @type {HTMLElement} */
@@ -56,38 +60,9 @@ const placeLink = newPlaceForm.querySelector('#place_url');
 /** @type {HTMLCollection} */
 const popupCloseButtons = document.querySelectorAll(".popup__close-button");
 
-/** Массив карточек в галерее */
-/** @type {Object} */
-const initialCards = [
-  {
-    name: 'Исландия',
-    link: 'images/photos/iceland_1.jpg'
-  },
-  {
-    name: 'Буковель, Украина',
-    link: 'images/photos/bukovel_1.jpg'
-  },
-  {
-    name: 'Исландия',
-    link: 'images/photos/iceland_2.jpg'
-  },
-  {
-    name: 'Аризона, США',
-    link: 'images/photos/arizona_1.jpg'
-  },
-  {
-    name: 'Торонто, Канада',
-    link: 'images/photos/toronto_1.jpg'
-  },
-  {
-    name: 'Тронхейм, Норвегия',
-    link: 'images/photos/trondheim_1.jpg'
-  }
-];
-
 /** шаблон карточки */
 /** @type {HTMLElement} */
-const cardTeplate = document.querySelector('#photo-card').content;
+const cardTemplate = document.querySelector('#photo-card').content;
 
 /** контейнер карточек галереи - контейнер photo-cards внутри секции gallery */
 /** @type {HTMLElement} */
@@ -112,7 +87,7 @@ const imageViewPopupCaption = imageViewPopup.querySelector(".popup__caption");
  */
 function showPopup(popup) {
   popup.classList.add('popup_opened');
-  window.addEventListener('keydown', closeESC);
+  document.addEventListener('keydown', closeESC);
 }
 
 
@@ -122,7 +97,7 @@ function showPopup(popup) {
  */
 function closePopup(popup) {
   popup.classList.remove('popup_opened');
-  window.removeEventListener('keydown', closeESC);
+  document.removeEventListener('keydown', closeESC);
 }
 
 
@@ -146,6 +121,31 @@ function clearInputs(popup) {
 
 
 /**
+ * Закрывашка всплывашки редактирования профиля
+ */
+function closeProfileEditPopup() {
+  closePopup(profileEditPopup);
+}
+
+
+/**
+ * Закрывашка всплывашки просмотра изображения
+ */
+function closeImageViewPopup() {
+  closePopup(imageViewPopup);
+}
+
+
+/**
+ * Закрывашка всплывашки добавления карточки
+ */
+function closeNewPlacePopup() {
+  closePopup(newPlacePopup);
+  setTimeout(clearInputs, clearInputsTimeout, newPlacePopup);
+}
+
+
+/**
  * Получить сведения о пользователе
  */
 function getUsersInfo() {
@@ -156,21 +156,19 @@ function getUsersInfo() {
 
 /**
  * Кнопка Лайк на карточках фотографий
- * @param {HTMLButtonElement} button - нажатая кнопка
  */
-function likePhoto(button) {
-  button.classList.toggle("photo-card__button_active");
+function likePhoto(evt) {
+  evt.target.classList.toggle("photo-card__button_active");
 }
 
 
 /**
  * записываем свойства нажатой картинки в всплывашку
- * @param {HTMLImageElement} photo - элемент изображения из нажатой карточки
  */
-function getImage(photo) {
-  imageViewPopupImage.src = photo.src;
-  imageViewPopupImage.alt = photo.alt;
-  imageViewPopupCaption.textContent = photo.alt;
+function getImage(evt) {
+  imageViewPopupImage.src = evt.target.src;
+  imageViewPopupImage.alt = evt.target.alt;
+  imageViewPopupCaption.textContent =evt.target.alt;
   showPopup(imageViewPopup);
 }
 
@@ -197,7 +195,7 @@ function createCard(item) {
 
   /** в шаблоне берем весь элемент li */
   /** @type {Node} */
-  const cardElement = cardTeplate.querySelector('li').cloneNode(true);
+  const cardElement = cardTemplate.cloneNode(true);
 
   /** элемент изображения */
   /** @type {HTMLImageElement} */
@@ -211,19 +209,13 @@ function createCard(item) {
   cardElement.querySelector('.photo-card__title').textContent = item.name;
 
   /** прослушиватель нажатия на картинку */
-  cardImage.addEventListener('click', function (evt) {
-    getImage(evt.target);
-  })
+  cardImage.addEventListener('click', getImage)
 
   /** прослушиватель лайка */
-  cardElement.querySelector('.photo-card__button').addEventListener('click', function (evt) {
-    likePhoto(evt.target);
-  })
+  cardElement.querySelector('.photo-card__button').addEventListener('click', likePhoto)
 
   /** прослушиватель удаления */
-  cardElement.querySelector('.photo-card__delete').addEventListener('click', function () {
-    deletePhoto(cardElement);
-  })
+  cardElement.querySelector('.photo-card__delete').addEventListener('click', deletePhoto)
 
   /**
    * @returns {HTMLElement} возвращаем полностью созданный элемент карточки с прослушивателями
@@ -234,10 +226,9 @@ function createCard(item) {
 
 /**
  * функция удаления карточки
- * @param {HTMLElement} element - элемент удаляемого изображения
  */
-function deletePhoto(element) {
-  element.closest('li').remove();
+function deletePhoto(evt) {
+  evt.target.closest('li').remove();
 }
 
 
@@ -255,7 +246,7 @@ function submitNewPlaceForm(evt) {
 
   /** Очистить инпуты в всплывашке добавления карточки */
   /** тайм-аут, потому что заметна очистка формы при закрытии */
-  setTimeout(clearInputs, 350, newPlacePopup);
+  setTimeout(clearInputs, clearInputsTimeout, newPlacePopup);
 }
 
 
@@ -273,27 +264,43 @@ function closeESC(evt) {
 
     /** Если у всплывашки есть форма, очищаем инпуты */
     /** тайм-аут, потому что заметна очистка формы при закрытии */
-    setTimeout(clearInputs, 350, popup);
+    setTimeout(clearInputs, clearInputsTimeout, popup);
   }
 }
 
 
-/** Универсальная функция-закрывашка всплывашек, если что-то ввели, а потом закрыли */
-Array.from(popupCloseButtons).forEach((popupCloseButton) => {
+/**
+ * ф-я сброса всплывашки по нажатию на оверлей или кнопку закрытия
+ */
+function resetPopup(evt) {
 
-  /** для каждой кнопки закрытия всплывашки делаем прослушиватель */
-  popupCloseButton.addEventListener('click', function () {
+  /** локальная переменная для всплывашки, ищет ближнюю родительскую, с классом popup */
+  const popup = evt.target.closest('.popup:not(:first-child)');
 
-    /** локальная переменная для всплывашки, ищет ближнюю родительскую, с классом popup */
-    let popup = popupCloseButton.closest('.popup');
+  /** если цель события оверлей или кнопка закрытия */
+  if (evt.target === popup || evt.target.closest('.popup__close-button')) {
 
     /** закрываем всплывашку, удаляем класс popup_opened */
-    closePopup(popup);
+    if (popup.classList.contains('popup_edit_profile')) {
+      closeProfileEditPopup();
+    } else if (popup.classList.contains('popup_new-place')) {
+      closeNewPlacePopup();
+    } else if (popup.classList.contains('popup_view_image')) {
+      closeImageViewPopup();
+    }
+  }
+}
 
-    /** Если у всплывашки есть форма, очищаем инпуты */
-    /** тайм-аут, потому что заметна очистка формы при закрытии */
-    setTimeout(clearInputs, 350, popup);
-  })
+/** функция-закрывашка всплывашек, если что-то ввели, а потом закрыли */
+Array.from(popupCloseButtons).forEach((popupCloseButton) => {
+  /** для каждой кнопки закрытия всплывашки делаем прослушиватель */
+  popupCloseButton.addEventListener('click', resetPopup)
+})
+
+
+/** Слушалка нажатия на оверлей, закрывает всплывашку и очищает ее форму (если есть) */
+Array.from(popups).forEach((popup) => {
+  popup.addEventListener('click', resetPopup)
 })
 
 
@@ -311,7 +318,7 @@ profileEditButton.addEventListener('click', function () {
 editProfileForm.addEventListener('submit', submitProfileForm);
 
 /** Слушаем клик по кнопке Добавить место */
-addPlaceButton.addEventListener('click', function () {
+buttonAddPlace.addEventListener('click', function () {
 
   /** Открыть всплывашку добавления места */
   showPopup(newPlacePopup);
@@ -319,19 +326,6 @@ addPlaceButton.addEventListener('click', function () {
 
 /** Слушаем отправку формы добавления места */
 newPlaceForm.addEventListener('submit', submitNewPlaceForm);
-
-/** Слушалка нажатия на оверлей, закрывает всплывашку и очищает ее форму (если есть) */
-Array.from(popups).forEach((popup) => {
-  popup.addEventListener('click', function (evt) {
-    if (evt.target === popup) {
-      closePopup(evt.target);
-
-      /** Если у всплывашки есть форма, очищаем инпуты */
-      /** тайм-аут, потому что заметна очистка формы при закрытии */
-      setTimeout(clearInputs, 350, popup);
-    }
-  })
-})
 
 
 /** ждем загрузки DOM */
