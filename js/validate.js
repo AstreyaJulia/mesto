@@ -28,15 +28,12 @@ const validationSettings = {
  */
 function showInputError(input, form, message) {
 
-  /** Сообщение об ошибке для инпута (создается по id соседнего инпута через <span>) */
   /** @type {HTMLElement} */
   const error = form.querySelector(`#${input.id}-error`);
 
-  /** Сообщение об ошибке для инпута (создается по id соседнего инпута через <span>) */
   /** @type {string} */
   error.textContent = message;
 
-  /** показать ошибку, добавляем классы инпуту и ошибке */
   input.classList.add(validationSettings.inputErrorClass);
   error.classList.add(validationSettings.errorClass);
 }
@@ -49,15 +46,12 @@ function showInputError(input, form, message) {
  */
 function hideInputError(input, form) {
 
-  /** Сообщение об ошибке для инпута (создается по id соседнего инпута через <span>) */
   /** @type {HTMLElement} */
   const error = form.querySelector(`#${input.id}-error`);
 
-  /** Записываем cообщение об ошибке */
   /** @type {string} */
   error.textContent = "";
 
-  /** скрыть ошибку, удаляем классы у инпута и ошибки */
   input.classList.remove(validationSettings.inputErrorClass);
   error.classList.remove(validationSettings.errorClass);
 }
@@ -81,8 +75,6 @@ function validateInput(form, input) {
  * @param {HTMLButtonElement} submitButton - кнопка отправки формы
  */
 function switchSubmitButton(inputArray, submitButton) {
-
-  /** Фильтруем массив инпутов, если валидацию прошел один или ни одного инпута, то кнопка блокируется */
   if (Array.from(inputArray).filter(input => !input.validity.valid).length === 0) {
     submitButton.disabled = false;
     submitButton.classList.remove(validationSettings.inactiveButtonClass);
@@ -99,11 +91,9 @@ function switchSubmitButton(inputArray, submitButton) {
  */
 function setInputEvtListeners(form) {
 
-  /** Коллекция инпутов в форме */
   /** @type {HTMLCollection} */
   const inputArray = form.querySelectorAll(validationSettings.inputSelector);
 
-  /** Кнопка Отправить форму */
   /** @type {HTMLButtonElement} */
   const submitButton = form.querySelector(validationSettings.submitButtonSelector);
 
@@ -129,30 +119,22 @@ function setInputEvtListeners(form) {
  */
 function enableValidation() {
 
-  /** Коллекция форм на странице */
   /** @type {HTMLCollection} */
   const formsArray = document.querySelectorAll(validationSettings.formSelector);
 
-  /** Перебираем коллекцию форм, вешаем прослушиватель submit каждой форме */
   Array.from(formsArray).forEach((form) => {
 
     form.addEventListener('submit', (evt) => {
 
-      /** отмена дефолтного действия браузера */
       evt.preventDefault();
     });
 
-    /** вешаем прослушиватели на инпуты формы */
     setInputEvtListeners(form);
   });
 }
 
 
-/**
- * ждем загрузки DOM
- */
+/** ждем загрузки DOM */
 document.addEventListener('DOMContentLoaded', function () {
-
-  /** Включаем валидацию */
   enableValidation();
 });

@@ -1,8 +1,8 @@
 'use strict';
 
 /** Тайм-аут для очистки инпутов формы, чтобы не была заметна очистка инпутов при закрытии формы */
-/** @type {number} в миллисекундах, анимация 400 мс, тайм-аут чуть меньше, чтобы не задерживать выполнение кода */
-const clearInputsTimeout = 350;
+/** @type {number} в миллисекундах, анимация 400 мс */
+const CLEAR_INPUTS_TIMEOUT = 350;
 
 /** Все всплывашки на странице */
 /** @type {HTMLCollection} */
@@ -120,51 +120,39 @@ function clearInputs(popup) {
 }
 
 
-/**
- * Закрывашка всплывашки редактирования профиля
- */
+/** Закрыть всплывашку редактирования профиля */
 function closeProfileEditPopup() {
   closePopup(profileEditPopup);
 }
 
 
-/**
- * Закрывашка всплывашки просмотра изображения
- */
+/** Закрыть всплывашку просмотра изображения */
 function closeImageViewPopup() {
   closePopup(imageViewPopup);
 }
 
 
-/**
- * Закрывашка всплывашки добавления карточки
- */
+/** Закрыть всплывашку добавления карточки */
 function closeNewPlacePopup() {
   closePopup(newPlacePopup);
-  setTimeout(clearInputs, clearInputsTimeout, newPlacePopup);
+  setTimeout(clearInputs, CLEAR_INPUTS_TIMEOUT, newPlacePopup);
 }
 
 
-/**
- * Получить сведения о пользователе
- */
+/** Получить сведения о пользователе */
 function getUsersInfo() {
   popupTitleInput.value = profileTitle.textContent;
   popupSubtitleInput.value = profileSubtitle.textContent;
 }
 
 
-/**
- * Кнопка Лайк на карточках фотографий
- */
+/** Кнопка Лайк на карточках фотографий */
 function likePhoto(evt) {
   evt.target.classList.toggle("photo-card__button_active");
 }
 
 
-/**
- * записываем свойства нажатой картинки в всплывашку
- */
+/** Записать свойства нажатой картинки в всплывашку */
 function getImage(evt) {
   imageViewPopupImage.src = evt.target.src;
   imageViewPopupImage.alt = evt.target.alt;
@@ -172,36 +160,26 @@ function getImage(evt) {
   showPopup(imageViewPopup);
 }
 
-/**
- * функция отправки данных формы редактирования профиля
- */
+/** Отправка данных формы редактирования профиля */
 function submitProfileForm(evt) {
   evt.preventDefault();
-
-  /** присваиваем значениям в профиле значения инпутов */
   profileTitle.textContent = popupTitleInput.value;
   profileSubtitle.textContent = popupSubtitleInput.value;
-
-  /** Закрыть всплывашку профиля - удаляем класс popup_opened */
   closePopup(profileEditPopup);
 }
 
 
 /**
- * создаем карточку
+ * Создаем карточку
  * @param {Object} item - элемент из массива {name: название, link: ссылка}
  */
 function createCard(item) {
-
-  /** в шаблоне берем весь элемент li */
   /** @type {Node} */
   const cardElement = cardTemplate.cloneNode(true);
 
-  /** элемент изображения */
-  /** @type {HTMLImageElement} */
+  /** @type {HTMLImageElement} элемент изображения */
   const cardImage = cardElement.querySelector('.photo-card__image');
 
-  /** записываем в шаблон значения из элемента массива */
   cardImage.src = item.link;
   cardImage.alt = item.name;
 
@@ -217,121 +195,90 @@ function createCard(item) {
   /** прослушиватель удаления */
   cardElement.querySelector('.photo-card__delete').addEventListener('click', deletePhoto)
 
-  /**
-   * @returns {HTMLElement} возвращаем полностью созданный элемент карточки с прослушивателями
-   */
+  /** @returns {HTMLElement} элемент карточки с прослушивателями */
   return cardElement
 }
 
 
-/**
- * функция удаления карточки
- */
+/** Удаление карточки */
 function deletePhoto(evt) {
   evt.target.closest('li').remove();
 }
 
 
-/**
- * функция отправки формы добавления места
- */
+/** Отправка формы добавления места */
 function submitNewPlaceForm(evt) {
   evt.preventDefault();
 
   /** добавляем карточку */
   photoCards.prepend(createCard({name: placeName.value, link: placeLink.value}))
 
-  /** Закрыть всплывашку добавления карточки - удаляем класс popup_opened */
   closePopup(newPlacePopup)
-
-  /** Очистить инпуты в всплывашке добавления карточки */
-  /** тайм-аут, потому что заметна очистка формы при закрытии */
-  setTimeout(clearInputs, clearInputsTimeout, newPlacePopup);
+  setTimeout(clearInputs, CLEAR_INPUTS_TIMEOUT, newPlacePopup);
 }
 
 
-/**
- * ф-я закрытия всплывашки по нажатию ESC
- */
+/** Закрывает всплывашку по ESC */
 function closeESC(evt) {
   if (evt.key === "Escape") {
 
-    /** Ищем открытую всплывашку с классом popup_opened, больше 1 их точно не будет */
+    /** @type {HTMLElement} */
     const popup = document.querySelector('.popup_opened');
 
-    /** Закрываем всплывашку */
     closePopup(popup);
-
-    /** Если у всплывашки есть форма, очищаем инпуты */
-    /** тайм-аут, потому что заметна очистка формы при закрытии */
-    setTimeout(clearInputs, clearInputsTimeout, popup);
+    setTimeout(clearInputs, CLEAR_INPUTS_TIMEOUT, popup);
   }
 }
 
 
-/**
- * ф-я сброса всплывашки по нажатию на оверлей или кнопку закрытия
- */
+/** Сброс всплывашки по нажатию на оверлей или кнопку закрытия */
 function resetPopup(evt) {
 
-  /** локальная переменная для всплывашки, ищет ближнюю родительскую, с классом popup */
+  /** @type {HTMLElement} */
   const popup = evt.target.closest('.popup:not(:first-child)');
 
   /** если цель события оверлей или кнопка закрытия */
   if (evt.target === popup || evt.target.closest('.popup__close-button')) {
-
-    /** закрываем всплывашку, удаляем класс popup_opened */
-    if (popup.classList.contains('popup_edit_profile')) {
-      closeProfileEditPopup();
-    } else if (popup.classList.contains('popup_new-place')) {
-      closeNewPlacePopup();
-    } else if (popup.classList.contains('popup_view_image')) {
-      closeImageViewPopup();
-    }
+    closePopup(popup);
+    /* closeProfileEditPopup(), closeNewPlacePopup(), closeImageViewPopup() на данный момент не при делах */
   }
 }
 
-/** функция-закрывашка всплывашек, если что-то ввели, а потом закрыли */
+/** Прослушиватель нажатия на кнопку закрытия всплывашки */
 Array.from(popupCloseButtons).forEach((popupCloseButton) => {
-  /** для каждой кнопки закрытия всплывашки делаем прослушиватель */
   popupCloseButton.addEventListener('click', resetPopup)
 })
 
 
-/** Слушалка нажатия на оверлей, закрывает всплывашку и очищает ее форму (если есть) */
+/** Прослушиватель нажатия на оверлей */
 Array.from(popups).forEach((popup) => {
   popup.addEventListener('click', resetPopup)
 })
 
 
-/** Слушаем клик по кнопке редактирования профиля */
+/** Прослушиватель нажатия на кнопку редактирования профиля */
 profileEditButton.addEventListener('click', function () {
-
-  /** Открыть всплывашку профиля */
   showPopup(profileEditPopup);
-
-  /** Получить данные о пользователе */
   getUsersInfo();
 })
 
-/** Слушаем отправку формы редактирования профиля */
+/** Прослушиватель отправки формы редактирования профиля */
 editProfileForm.addEventListener('submit', submitProfileForm);
 
-/** Слушаем клик по кнопке Добавить место */
-buttonAddPlace.addEventListener('click', function () {
 
-  /** Открыть всплывашку добавления места */
+/** Прослушиватель нажатия на кнопку Добавить место */
+buttonAddPlace.addEventListener('click', function () {
   showPopup(newPlacePopup);
 })
+
 
 /** Слушаем отправку формы добавления места */
 newPlaceForm.addEventListener('submit', submitNewPlaceForm);
 
 
-/** ждем загрузки DOM */
+/** Ждем загрузки DOM */
 document.addEventListener('DOMContentLoaded', function () {
 
-  /** отрисовываем карточки в галерее */
   initialCards.forEach((item) => {
     photoCards.prepend(createCard(item));
   })
