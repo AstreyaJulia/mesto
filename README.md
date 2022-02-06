@@ -51,7 +51,7 @@
 
 ### Пошагово:
 
-#### Спринт 4 (10.01.2022 - ...):
+#### Спринт 4 (10.01.2022 - 13.01.2022):
 
 1. Настройка проекта: gitignore, nojekyll;
 2. [Normalize.css](https://necolas.github.io/normalize.css/). Установка через npm: `npm install normalize.css`;
