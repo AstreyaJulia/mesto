@@ -1,6 +1,6 @@
 /** Массив карточек в галерее */
 /** @type {Object} */
-const initialCards = [
+export const initialCards = [
   {
     name: 'Исландия',
     link: 'images/photos/iceland_1.jpg'

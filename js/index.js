@@ -1,5 +1,14 @@
 'use strict';
 
+/** Массив карточек */
+import {initialCards} from "./initialCards.js";
+
+/** Создает карточки, вешает прослушиватели */
+import {Card} from "./Card.js";
+
+/** Создает карточки, вешает прослушиватели */
+import {FormValidator, validationSettings} from "./FormValidator.js";
+
 /** Тайм-аут для очистки инпутов формы, чтобы не была заметна очистка инпутов при закрытии формы */
 /** @type {number} в миллисекундах, анимация 400 мс */
 const CLEAR_INPUTS_TIMEOUT = 350;
@@ -59,10 +68,6 @@ const placeLink = newPlaceForm.querySelector('#place_url');
 /** кнопки закрытия всплывашек на всех всплывашках */
 /** @type {HTMLCollection} */
 const popupCloseButtons = document.querySelectorAll(".popup__close-button");
-
-/** шаблон карточки */
-/** @type {HTMLElement} */
-const cardTemplate = document.querySelector('#photo-card').content;
 
 /** контейнер карточек галереи - контейнер photo-cards внутри секции gallery */
 /** @type {HTMLElement} */
@@ -147,16 +152,16 @@ function getUsersInfo() {
 
 
 /** Кнопка Лайк на карточках фотографий */
-function likePhoto(evt) {
+export function likePhoto(evt) {
   evt.target.classList.toggle("photo-card__button_active");
 }
 
 
 /** Записать свойства нажатой картинки в всплывашку */
-function getImage(evt) {
+export function getImage(evt) {
   imageViewPopupImage.src = evt.target.src;
   imageViewPopupImage.alt = evt.target.alt;
-  imageViewPopupCaption.textContent =evt.target.alt;
+  imageViewPopupCaption.textContent = evt.target.alt;
   showPopup(imageViewPopup);
 }
 
@@ -174,34 +179,12 @@ function submitProfileForm(evt) {
  * @param {Object} item - элемент из массива {name: название, link: ссылка}
  */
 function createCard(item) {
-  /** @type {Node} */
-  const cardElement = cardTemplate.cloneNode(true);
-
-  /** @type {HTMLImageElement} элемент изображения */
-  const cardImage = cardElement.querySelector('.photo-card__image');
-
-  cardImage.src = item.link;
-  cardImage.alt = item.name;
-
-  /** @type {string} */
-  cardElement.querySelector('.photo-card__title').textContent = item.name;
-
-  /** прослушиватель нажатия на картинку */
-  cardImage.addEventListener('click', getImage)
-
-  /** прослушиватель лайка */
-  cardElement.querySelector('.photo-card__button').addEventListener('click', likePhoto)
-
-  /** прослушиватель удаления */
-  cardElement.querySelector('.photo-card__delete').addEventListener('click', deletePhoto)
-
-  /** @returns {HTMLElement} элемент карточки с прослушивателями */
-  return cardElement
+  return new Card(item, "#photo-card").createCard();
 }
 
 
 /** Удаление карточки */
-function deletePhoto(evt) {
+export function deletePhoto(evt) {
   evt.target.closest('li').remove();
 }
 
@@ -281,5 +264,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   initialCards.forEach((item) => {
     photoCards.prepend(createCard(item));
-  })
+  });
+
+  new FormValidator(validationSettings).enableValidation();
+
 });
