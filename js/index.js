@@ -262,10 +262,12 @@ newPlaceForm.addEventListener('submit', submitNewPlaceForm);
 /** Ждем загрузки DOM */
 document.addEventListener('DOMContentLoaded', function () {
 
+  /** Отрисовывает карточки при загрузке страницы */
   initialCards.forEach((item) => {
     photoCards.prepend(createCard(item));
   });
 
+  /** Включает валидацию */
   new FormValidator(validationSettings).enableValidation();
 
 });

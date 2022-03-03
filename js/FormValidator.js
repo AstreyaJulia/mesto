@@ -39,12 +39,12 @@ export class FormValidator {
    */
   _showInputError(input, form, message) {
 
-  const error = form.querySelector(`#${input.id}-error`);
+    const error = form.querySelector(`#${input.id}-error`);
 
-  error.textContent = message;
+    error.textContent = message;
 
-  input.classList.add(this._popupInputTypeError);
-  error.classList.add(this._popupErrorVisible);
+    input.classList.add(this._popupInputTypeError);
+    error.classList.add(this._popupErrorVisible);
   }
 
 
@@ -128,10 +128,9 @@ export class FormValidator {
 
     const formsArray = document.querySelectorAll(this._formSelector);
 
+    /** Для всех форм */
     Array.from(formsArray).forEach((form) => {
-
       form.addEventListener('submit', (evt) => {
-
         evt.preventDefault();
       });
 
