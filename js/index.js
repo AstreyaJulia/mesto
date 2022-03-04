@@ -14,7 +14,7 @@ import {FormValidator, validationSettings} from "./FormValidator.js";
 const CLEAR_INPUTS_TIMEOUT = 350;
 
 /** Все всплывашки на странице */
-/** @type {HTMLCollection} */
+/** @type {NodeListOf<Element>} */
 const popups = document.querySelectorAll('.popup:not(:first-child)');
 
 /** Кнопка редактирования профиля */
@@ -66,7 +66,7 @@ const placeName = newPlaceForm.querySelector('#place_name');
 const placeLink = newPlaceForm.querySelector('#place_url');
 
 /** кнопки закрытия всплывашек на всех всплывашках */
-/** @type {HTMLCollection} */
+/** @type {NodeListOf<Element>} */
 const popupCloseButtons = document.querySelectorAll(".popup__close-button");
 
 /** контейнер карточек галереи - контейнер photo-cards внутри секции gallery */
@@ -84,6 +84,12 @@ const imageViewPopupImage = imageViewPopup.querySelector(".popup__image");
 /** Элемент описания изображения в всплывашке просмотра места */
 /** @type {HTMLElement} */
 const imageViewPopupCaption = imageViewPopup.querySelector(".popup__caption");
+
+/**
+ * Формы, для которых нужна валидация
+ * @type {NodeListOf<Element>}
+ */
+const formsToValidate = document.querySelectorAll(validationSettings.formSelector);
 
 
 /**
@@ -112,35 +118,12 @@ function closePopup(popup) {
  */
 function clearInputs(popup) {
   if (popup.querySelector('input')) {
-    popup.querySelector('form').reset();
+    const popupForm = popup.querySelector('form');
+    popupForm.reset();
 
     /** Поля пустые - блокируем кнопку отправки формы */
-    /** @type {HTMLButtonElement} */
-    const submitButton = popup.querySelector('.popup__submit')
-    if (submitButton) {
-      submitButton.disabled = true;
-      submitButton.classList.add(validationSettings.inactiveButtonClass);
-    }
+    new FormValidator(validationSettings, popupForm).switchSubmitButton()
   }
-}
-
-
-/** Закрыть всплывашку редактирования профиля */
-function closeProfileEditPopup() {
-  closePopup(profileEditPopup);
-}
-
-
-/** Закрыть всплывашку просмотра изображения */
-function closeImageViewPopup() {
-  closePopup(imageViewPopup);
-}
-
-
-/** Закрыть всплывашку добавления карточки */
-function closeNewPlacePopup() {
-  closePopup(newPlacePopup);
-  setTimeout(clearInputs, CLEAR_INPUTS_TIMEOUT, newPlacePopup);
 }
 
 
@@ -148,12 +131,6 @@ function closeNewPlacePopup() {
 function getUsersInfo() {
   popupTitleInput.value = profileTitle.textContent;
   popupSubtitleInput.value = profileSubtitle.textContent;
-}
-
-
-/** Кнопка Лайк на карточках фотографий */
-export function likePhoto(evt) {
-  evt.target.classList.toggle("photo-card__button_active");
 }
 
 
@@ -182,11 +159,6 @@ function createCard(item) {
   return new Card(item, "#photo-card").createCard();
 }
 
-
-/** Удаление карточки */
-export function deletePhoto(evt) {
-  evt.target.closest('li').remove();
-}
 
 
 /** Отправка формы добавления места */
@@ -223,18 +195,17 @@ function resetPopup(evt) {
   /** если цель события оверлей или кнопка закрытия */
   if (evt.target === popup || evt.target.closest('.popup__close-button')) {
     closePopup(popup);
-    /* closeProfileEditPopup(), closeNewPlacePopup(), closeImageViewPopup() на данный момент не при делах */
   }
 }
 
 /** Прослушиватель нажатия на кнопку закрытия всплывашки */
-Array.from(popupCloseButtons).forEach((popupCloseButton) => {
+popupCloseButtons.forEach((popupCloseButton) => {
   popupCloseButton.addEventListener('click', resetPopup)
 })
 
 
 /** Прослушиватель нажатия на оверлей */
-Array.from(popups).forEach((popup) => {
+popups.forEach((popup) => {
   popup.addEventListener('click', resetPopup)
 })
 
@@ -268,6 +239,8 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   /** Включает валидацию */
-  new FormValidator(validationSettings).enableValidation();
+  formsToValidate.forEach((form) => {
+    new FormValidator(validationSettings, form).enableValidation();
+  })
 
 });

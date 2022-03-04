@@ -1,4 +1,4 @@
-import {getImage, likePhoto, deletePhoto} from "./index.js";
+import {getImage} from "./index.js";
 
 export class Card {
   /**
@@ -22,12 +22,28 @@ export class Card {
   }
 
   /**
+   * Переключает кнопку Лайк на карточках фотографий
+   * @param evt
+   */
+  likePhoto(evt) {
+    evt.target.classList.toggle("photo-card__button_active");
+  }
+
+  /**
+   * Удаляет карточку
+   * @param evt
+   */
+  deletePhoto(evt) {
+    evt.target.closest('li').remove();
+  }
+
+  /**
    * Устанавливает прослушиватели: лайк, удаление, нажатие на изображение
    * @private
    */
   _setEventListeners() {
-    this._cardItem.querySelector('.photo-card__button').addEventListener('click', likePhoto);
-    this._cardItem.querySelector('.photo-card__delete').addEventListener('click', deletePhoto);
+    this._cardItem.querySelector('.photo-card__button').addEventListener('click', this.likePhoto);
+    this._cardItem.querySelector('.photo-card__delete').addEventListener('click', this.deletePhoto);
     this._cardImage.addEventListener('click', getImage);
   }
 

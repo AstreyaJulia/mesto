@@ -20,26 +20,27 @@ export const validationSettings = {
 };
 
 export class FormValidator {
-  constructor(validationSettings) {
-    this._formSelector = validationSettings.formSelector;
+  constructor(validationSettings, form) {
     this._popupInput = validationSettings.inputSelector;
     this._popupSubmit = validationSettings.submitButtonSelector;
     this._popupSubmitDisabled = validationSettings.inactiveButtonClass;
     this._popupInputTypeError = validationSettings.inputErrorClass;
     this._popupErrorVisible = validationSettings.errorClass;
+    this._formToValidate = form;
+    this._submitButton = this._formToValidate.querySelector(this._popupSubmit);
+    this._inputArray = this._formToValidate.querySelectorAll(this._popupInput);
   }
 
 
   /**
    * Включает ошибку валидации инпута
    * @param input - валидируемый инпут
-   * @param form - элемент формы
    * @param message - сообщение об ошибке
    * @private
    */
-  _showInputError(input, form, message) {
+  _showInputError(input, message) {
 
-    const error = form.querySelector(`#${input.id}-error`);
+    const error = this._formToValidate.querySelector(`#${input.id}-error`);
 
     error.textContent = message;
 
@@ -51,12 +52,11 @@ export class FormValidator {
   /**
    * Выключает ошибку валидации инпута
    * @param input - валидируемый инпут
-   * @param form - элемент формы
    * @private
    */
-  _hideInputError(input, form) {
+  _hideInputError(input) {
 
-    const error = form.querySelector(`#${input.id}-error`);
+    const error = this._formToValidate.querySelector(`#${input.id}-error`);
 
     error.textContent = "";
 
@@ -67,56 +67,51 @@ export class FormValidator {
 
   /**
    * Валидация инпута
-   * @param form - валидируемый инпут
    * @param input - элемент формы
    * @private
    */
-  _validateInput(form, input) {
+  _validateInput(input) {
 
     /** Если инпут не прошел валидацию (?) показывает ошибку, иначе (:) убирает ошибку */
-    !input.validity.valid ? this._showInputError(input, form, input.validationMessage) : this._hideInputError(input, form);
+    !input.validity.valid ? this._showInputError(input, input.validationMessage) : this._hideInputError(input);
   }
 
 
   /**
    * Переключает состояние кнопки отправки формы
-   * @param inputArray - коллекция валидируемых инпутов
-   * @param submitButton - кнопка отправки формы
-   * @private
    */
-  _switchSubmitButton(inputArray, submitButton) {
-    if (Array.from(inputArray).filter(input => !input.validity.valid).length === 0) {
-      submitButton.disabled = false;
-      submitButton.classList.remove(this._popupSubmitDisabled);
+  switchSubmitButton() {
+    if (Array.from(this._inputArray).filter(input => !input.validity.valid).length === 0) {
+      this._submitButton.disabled = false;
+      this._submitButton.classList.remove(this._popupSubmitDisabled);
     } else {
-      submitButton.disabled = true;
-      submitButton.classList.add(this._popupSubmitDisabled);
+      this._submitButton.disabled = true;
+      this._submitButton.classList.add(this._popupSubmitDisabled);
     }
   }
 
 
   /**
    * Создание прослушивателей
-   * @param form - элемент формы, на которую вешаем прослушиватели
    * @private
    */
-  _setInputEvtListeners(form) {
+  _setInputEvtListeners() {
 
-    const inputArray = form.querySelectorAll(this._popupInput);
+    this.switchSubmitButton();
 
-    const submitButton = form.querySelector(this._popupSubmit);
-
-    this._switchSubmitButton(inputArray, submitButton)
+      this._formToValidate.addEventListener('submit', (evt) => {
+        evt.preventDefault();
+      });
 
     /** Вешаем прослушиватель input каждому инпуту */
-    Array.from(inputArray).forEach((input) => {
+    this._inputArray.forEach((input) => {
       input.addEventListener('input', () => {
 
         /** Валидация инпута, включает/выключает ошибки */
-        this._validateInput(form, input);
+        this._validateInput(input);
 
         /** Переключалка состояния кнопки отправки формы */
-        this._switchSubmitButton(inputArray, submitButton);
+        this.switchSubmitButton();
       });
     });
   }
@@ -125,16 +120,6 @@ export class FormValidator {
    * Функция включения валидации
    */
   enableValidation() {
-
-    const formsArray = document.querySelectorAll(this._formSelector);
-
-    /** Для всех форм */
-    Array.from(formsArray).forEach((form) => {
-      form.addEventListener('submit', (evt) => {
-        evt.preventDefault();
-      });
-
-      this._setInputEvtListeners(form);
-    });
+      this._setInputEvtListeners(this._formToValidate);
   }
 }

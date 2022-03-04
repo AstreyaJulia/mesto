@@ -1,0 +1,14 @@
+{
+  "name": "mesto",
+  "description": "Study project Mesto. Insta killer.",
+  "version": "1.0.0",
+  "author": " <astreyajulia@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AstreyaJulia/mesto"
+  },
+  "scripts": {
+    "dev server": "npx http-server -o"
+  }
+}
