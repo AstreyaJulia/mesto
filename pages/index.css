@@ -29,6 +29,7 @@
 @import "../blocks/footer/__copyright/footer__copyright.css";
 
 @import "../blocks/popup/popup.css";
+@import "../blocks/popup/_view_image/popup_view_image.css";
 @import "../blocks/popup/__container/popup__container.css";
 @import "../blocks/popup/__container/_image-view/popup__container_image-view.css";
 @import "../blocks/popup/_opened/popup_opened.css";

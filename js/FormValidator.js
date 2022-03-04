@@ -32,12 +32,10 @@ export class FormValidator {
   }
 
 
-  /**
-   * Включает ошибку валидации инпута
+  /** Включает ошибку валидации инпута
    * @param input - валидируемый инпут
    * @param message - сообщение об ошибке
-   * @private
-   */
+   * @private */
   _showInputError(input, message) {
 
     const error = this._formToValidate.querySelector(`#${input.id}-error`);
@@ -49,37 +47,27 @@ export class FormValidator {
   }
 
 
-  /**
-   * Выключает ошибку валидации инпута
+  /** Выключает ошибку валидации инпута
    * @param input - валидируемый инпут
-   * @private
-   */
+   * @private */
   _hideInputError(input) {
-
     const error = this._formToValidate.querySelector(`#${input.id}-error`);
-
     error.textContent = "";
-
     input.classList.remove(this._popupInputTypeError);
     error.classList.remove(this._popupErrorVisible);
   }
 
 
-  /**
-   * Валидация инпута
+  /** Валидация инпута
+   * Если инпут не прошел валидацию (?) показывает ошибку, иначе (:) убирает ошибку
    * @param input - элемент формы
-   * @private
-   */
+   * @private */
   _validateInput(input) {
-
-    /** Если инпут не прошел валидацию (?) показывает ошибку, иначе (:) убирает ошибку */
     !input.validity.valid ? this._showInputError(input, input.validationMessage) : this._hideInputError(input);
   }
 
 
-  /**
-   * Переключает состояние кнопки отправки формы
-   */
+  /** Переключает состояние кнопки отправки формы */
   switchSubmitButton() {
     if (Array.from(this._inputArray).filter(input => !input.validity.valid).length === 0) {
       this._submitButton.disabled = false;
@@ -91,17 +79,13 @@ export class FormValidator {
   }
 
 
-  /**
-   * Создание прослушивателей
-   * @private
-   */
+  /** Создание прослушивателей
+   * @private */
   _setInputEvtListeners() {
-
     this.switchSubmitButton();
-
-      this._formToValidate.addEventListener('submit', (evt) => {
-        evt.preventDefault();
-      });
+    this._formToValidate.addEventListener('submit', (evt) => {
+      evt.preventDefault();
+    });
 
     /** Вешаем прослушиватель input каждому инпуту */
     this._inputArray.forEach((input) => {
@@ -116,10 +100,8 @@ export class FormValidator {
     });
   }
 
-  /**
-   * Функция включения валидации
-   */
+  /** Функция включения валидации */
   enableValidation() {
-      this._setInputEvtListeners(this._formToValidate);
+    this._setInputEvtListeners(this._formToValidate);
   }
 }

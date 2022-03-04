@@ -85,37 +85,29 @@ const imageViewPopupImage = imageViewPopup.querySelector(".popup__image");
 /** @type {HTMLElement} */
 const imageViewPopupCaption = imageViewPopup.querySelector(".popup__caption");
 
-/**
- * Формы, для которых нужна валидация
- * @type {NodeListOf<Element>}
- */
+/** Формы, для которых нужна валидация
+ * @type {NodeListOf<Element>} */
 const formsToValidate = document.querySelectorAll(validationSettings.formSelector);
 
 
-/**
- * Открывашка всплывашки, добавление прослушивателя нажатия на ESC
- * @param {HTMLElement} popup - элемент popup
- */
+/** Открывашка всплывашки, добавление прослушивателя нажатия на ESC
+ * @param {HTMLElement} popup - элемент popup */
 function showPopup(popup) {
   popup.classList.add('popup_opened');
   document.addEventListener('keydown', closeESC);
 }
 
 
-/**
- * Закрывашка всплывашки, удаление прослушивателя нажатия на ESC
- * @param {HTMLElement} popup - элемент popup
- */
+/** Закрывашка всплывашки, удаление прослушивателя нажатия на ESC
+ * @param {HTMLElement} popup - элемент popup */
 function closePopup(popup) {
   popup.classList.remove('popup_opened');
   document.removeEventListener('keydown', closeESC);
 }
 
 
-/**
- * Очистить все инпуты после закрытия всплывашки
- * @param {HTMLElement} popup - элемент popup
- */
+/** Очистить все инпуты после закрытия всплывашки
+ * @param {HTMLElement} popup - элемент popup */
 function clearInputs(popup) {
   if (popup.querySelector('input')) {
     const popupForm = popup.querySelector('form');
@@ -151,22 +143,14 @@ function submitProfileForm(evt) {
 }
 
 
-/**
- * Создаем карточку
- * @param {Object} item - элемент из массива {name: название, link: ссылка}
- */
-function createCard(item) {
-  return new Card(item, "#photo-card").createCard();
-}
-
-
-
 /** Отправка формы добавления места */
 function submitNewPlaceForm(evt) {
   evt.preventDefault();
 
   /** добавляем карточку */
-  photoCards.prepend(createCard({name: placeName.value, link: placeLink.value}))
+  photoCards.prepend(
+    new Card({name: placeName.value, link: placeLink.value}, "#photo-card").createCard()
+  )
 
   closePopup(newPlacePopup)
   setTimeout(clearInputs, CLEAR_INPUTS_TIMEOUT, newPlacePopup);
@@ -235,7 +219,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /** Отрисовывает карточки при загрузке страницы */
   initialCards.forEach((item) => {
-    photoCards.prepend(createCard(item));
+    photoCards.prepend(
+      new Card(item, "#photo-card").createCard()
+    );
   });
 
   /** Включает валидацию */
