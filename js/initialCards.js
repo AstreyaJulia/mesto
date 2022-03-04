@@ -1,5 +1,4 @@
 /** Массив карточек в галерее */
-/** @type {Object} */
 export const initialCards = [
   {
     name: 'Исландия',
