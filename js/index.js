@@ -9,10 +9,6 @@ import {Card} from "./Card.js";
 /** Создает карточки, вешает прослушиватели */
 import {FormValidator, validationSettings} from "./FormValidator.js";
 
-/** Тайм-аут для очистки инпутов формы, чтобы не была заметна очистка инпутов при закрытии формы */
-/** @type {number} в миллисекундах, анимация 400 мс */
-const CLEAR_INPUTS_TIMEOUT = 350;
-
 /** Все всплывашки на странице */
 /** @type {NodeListOf<Element>} */
 const popups = document.querySelectorAll('.popup:not(:first-child)');
@@ -65,7 +61,6 @@ const placeName = newPlaceForm.querySelector('#place_name');
 /** @type {HTMLInputElement} */
 const placeLink = newPlaceForm.querySelector('#place_url');
 
-
 /** контейнер карточек галереи - контейнер photo-cards внутри секции gallery */
 /** @type {HTMLElement} */
 const photoCards = document.querySelector('.gallery .photo-cards');
@@ -82,9 +77,21 @@ const imageViewPopupImage = imageViewPopup.querySelector(".popup__image");
 /** @type {HTMLElement} */
 const imageViewPopupCaption = imageViewPopup.querySelector(".popup__caption");
 
-/** Формы, для которых нужна валидация
- * @type {NodeListOf<Element>} */
-const formsToValidate = document.querySelectorAll(validationSettings.formSelector);
+/** Форма редактирования профиля
+ * @type {Element} */
+const formProfileEdit = document.querySelector(".popup_edit_profile " + validationSettings.formSelector);
+
+/** Экземпляр валидатора для формы редактирования профиля
+ * @type {FormValidator} */
+const profileEditValidator = new FormValidator(validationSettings, formProfileEdit);
+
+/** Форма добавления карточки
+ * @type {Element} */
+const formNewPlace = document.querySelector(".popup_new-place " + validationSettings.formSelector);
+
+/** Экземпляр валидатора для формы добавления карточки
+ * @type {FormValidator} */
+const newPlaceValidator = new FormValidator(validationSettings, formNewPlace);
 
 
 /** Открывашка всплывашки, добавление прослушивателя нажатия на ESC
@@ -100,19 +107,6 @@ function showPopup(popup) {
 function closePopup(popup) {
   popup.classList.remove('popup_opened');
   document.removeEventListener('keydown', closeESC);
-}
-
-
-/** Очистить все инпуты после закрытия всплывашки
- * @param {HTMLElement} popup - элемент popup */
-function clearInputs(popup) {
-  if (popup.querySelector('input')) {
-    const popupForm = popup.querySelector('form');
-    popupForm.reset();
-
-    /** Поля пустые - блокируем кнопку отправки формы */
-    new FormValidator(validationSettings, popupForm).switchSubmitButton()
-  }
 }
 
 
@@ -149,8 +143,10 @@ function submitNewPlaceForm(evt) {
     new Card({name: placeName.value, link: placeLink.value}, "#photo-card").createCard()
   )
 
-  closePopup(newPlacePopup)
-  setTimeout(clearInputs, CLEAR_INPUTS_TIMEOUT, newPlacePopup);
+  /** закрыли попап, сбросили форму, заблокировали кнопку */
+  closePopup(newPlacePopup);
+  newPlaceForm.reset();
+  newPlaceValidator.switchSubmitButton();
 }
 
 
@@ -162,7 +158,8 @@ function closeESC(evt) {
     const popup = document.querySelector('.popup_opened');
 
     closePopup(popup);
-    setTimeout(clearInputs, CLEAR_INPUTS_TIMEOUT, popup);
+    newPlaceForm.reset();
+    newPlaceValidator.switchSubmitButton();
   }
 }
 
@@ -176,6 +173,8 @@ function resetPopup(evt) {
   /** если цель события оверлей или кнопка закрытия */
   if (evt.target === popup || evt.target.closest('.popup__close-button')) {
     closePopup(popup);
+    newPlaceForm.reset();
+    newPlaceValidator.switchSubmitButton();
   }
 }
 
@@ -217,8 +216,6 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   /** Включает валидацию */
-  formsToValidate.forEach((form) => {
-    new FormValidator(validationSettings, form).enableValidation();
-  })
-
+  profileEditValidator.enableValidation();
+  newPlaceValidator.enableValidation();
 });
