@@ -18,20 +18,24 @@ export class Card {
   }
 
   /** Переключает кнопку Лайк на карточках фотографий */
-  _likePhoto(evt) {
-    evt.target.classList.toggle("photo-card__button_active");
+  _likePhoto() {
+    this._buttonLike.classList.toggle("photo-card__button_active");
   }
 
   /** Удаляет карточку */
-  _deletePhoto(evt) {
-    evt.target.closest('li').remove();
+  _deletePhoto() {
+    this._card.remove();
+    this._cardItem = this._card = null;
   }
 
   /** Устанавливает прослушиватели: лайк, удаление, нажатие на изображение
    * @private */
   _setEventListeners() {
-    this._cardItem.querySelector('.photo-card__button').addEventListener('click', this._likePhoto);
-    this._cardItem.querySelector('.photo-card__delete').addEventListener('click', this._deletePhoto);
+    this._buttonLike = this._cardItem.querySelector('.photo-card__button');
+    this._buttonDelete = this._cardItem.querySelector('.photo-card__delete');
+    this._card = this._cardItem.querySelector('li'); // иначе не находит this._cardItem в методе _deletePhoto
+    this._buttonLike.addEventListener('click', this._likePhoto.bind(this));
+    this._buttonDelete.addEventListener('click', this._deletePhoto.bind(this));
     this._cardImage.addEventListener('click', getImage);
   }
 
