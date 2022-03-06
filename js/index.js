@@ -65,9 +65,6 @@ const placeName = newPlaceForm.querySelector('#place_name');
 /** @type {HTMLInputElement} */
 const placeLink = newPlaceForm.querySelector('#place_url');
 
-/** кнопки закрытия всплывашек на всех всплывашках */
-/** @type {NodeListOf<Element>} */
-const popupCloseButtons = document.querySelectorAll(".popup__close-button");
 
 /** контейнер карточек галереи - контейнер photo-cards внутри секции gallery */
 /** @type {HTMLElement} */
@@ -181,11 +178,6 @@ function resetPopup(evt) {
     closePopup(popup);
   }
 }
-
-/** Прослушиватель нажатия на кнопку закрытия всплывашки */
-popupCloseButtons.forEach((popupCloseButton) => {
-  popupCloseButton.addEventListener('click', resetPopup)
-})
 
 
 /** Прослушиватель нажатия на оверлей */
