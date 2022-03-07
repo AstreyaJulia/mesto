@@ -79,10 +79,17 @@ export class FormValidator {
   }
 
 
+  /** Валидирует инпуты (при открытии формы) */
+  validateInputs() {
+    this._inputArray.forEach((input) => {
+      this._validateInput(input);
+    });
+  }
+
+
   /** Создание прослушивателей
    * @private */
   _setInputEvtListeners() {
-    this.switchSubmitButton();
     this._formToValidate.addEventListener('submit', (evt) => {
       evt.preventDefault();
     });

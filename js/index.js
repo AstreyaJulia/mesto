@@ -143,10 +143,9 @@ function submitNewPlaceForm(evt) {
     new Card({name: placeName.value, link: placeLink.value}, "#photo-card").createCard()
   )
 
-  /** закрыли попап, сбросили форму, заблокировали кнопку */
+  /** закрыли попап, сбросили форму */
   closePopup(newPlacePopup);
   newPlaceForm.reset();
-  newPlaceValidator.switchSubmitButton();
 }
 
 
@@ -158,8 +157,6 @@ function closeESC(evt) {
     const popup = document.querySelector('.popup_opened');
 
     closePopup(popup);
-    newPlaceForm.reset();
-    newPlaceValidator.switchSubmitButton();
   }
 }
 
@@ -173,8 +170,6 @@ function resetPopup(evt) {
   /** если цель события оверлей или кнопка закрытия */
   if (evt.target === popup || evt.target.closest('.popup__close-button')) {
     closePopup(popup);
-    newPlaceForm.reset();
-    newPlaceValidator.switchSubmitButton();
   }
 }
 
@@ -187,8 +182,10 @@ popups.forEach((popup) => {
 
 /** Прослушиватель нажатия на кнопку редактирования профиля */
 profileEditButton.addEventListener('click', function () {
-  showPopup(profileEditPopup);
   getUsersInfo();
+  showPopup(profileEditPopup);
+  profileEditValidator.validateInputs(); /** Иначе если стереть поля и закрыть не сохраняя, то при повторном открытии попапа ошибки не исчезнут */
+  profileEditValidator.switchSubmitButton();
 })
 
 /** Прослушиватель отправки формы редактирования профиля */
@@ -198,6 +195,8 @@ editProfileForm.addEventListener('submit', submitProfileForm);
 /** Прослушиватель нажатия на кнопку Добавить место */
 buttonAddPlace.addEventListener('click', function () {
   showPopup(newPlacePopup);
+  newPlaceValidator.validateInputs(); /** Возможно, лишнее, но зато сразу понятно, какие поля не заполнены */
+  newPlaceValidator.switchSubmitButton();
 })
 
 
