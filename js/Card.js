@@ -14,7 +14,7 @@ export class Card {
    * @returns {Node} - элемент карточки
    * @private */
   _getCardTemplate() {
-    return document.querySelector(this._cardElement).content.cloneNode(true);
+    return document.querySelector(this._cardElement).content.querySelector('li').cloneNode(true);
   }
 
   /** Переключает кнопку Лайк на карточках фотографий */
@@ -24,8 +24,8 @@ export class Card {
 
   /** Удаляет карточку */
   _deletePhoto() {
-    this._card.remove();
-    this._cardElement = null;
+    this._cardItem.remove();
+    this._cardItem = null;
   }
 
   /** Устанавливает прослушиватели: лайк, удаление, нажатие на изображение
@@ -33,7 +33,6 @@ export class Card {
   _setEventListeners() {
     this._buttonLike = this._cardItem.querySelector('.photo-card__button');
     this._buttonDelete = this._cardItem.querySelector('.photo-card__delete');
-    this._card = this._cardItem.querySelector('li'); // иначе не находит this._cardItem в методе _deletePhoto
     this._buttonLike.addEventListener('click', () => this._likePhoto());
     this._buttonDelete.addEventListener('click', () => this._deletePhoto());
     this._cardImage.addEventListener('click', getImage);
