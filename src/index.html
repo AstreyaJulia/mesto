@@ -3,13 +3,12 @@
 
 <head>
   <link rel="icon" href="favicon.ico">
-  <link rel="icon" href="images/fav/fav32.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="images/fav/fav152.png">
-  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="<%=require('./images/fav/fav32.svg')%>" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="<%=require('./images/fav/fav152.png')%>">
+  <link rel="manifest" href="../manifest.webmanifest">
   <meta name="theme-color" content="#000000" />
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="pages/index.css">
   <title>Mesto</title>
 </head>
 
@@ -17,13 +16,13 @@
 
 <header class="header">
   <a class="header__link" href="#" title="Mesto Russia">
-    <img class="header__logo" src="images/header__logo.png" alt="Логотип Место">
+    <img class="header__logo" src="<%=require('./images/header__logo.png')%>" alt="Логотип Место">
   </a>
 </header>
 
 <main class="content">
   <section class="profile">
-    <img src="images/avatars/profile__avatar.jpg" alt="Жак-Ив Кусто - Исследователь океана" class="profile__avatar">
+    <img src="<%=require('./images/avatars/profile__avatar.jpg')%>" alt="Жак-Ив Кусто - Исследователь океана" class="profile__avatar">
     <div class="profile__title-group">
       <h1 class="profile__title">Жак-Ив Кусто</h1>
       <button class="profile__button button" type="button"></button>
@@ -46,7 +45,7 @@
   <li>
     <article class="photo-card">
       <button class="photo-card__delete button" type="button"></button>
-      <img class="photo-card__image button" alt="Изображение" src="images">
+      <img class="photo-card__image button" alt="Изображение" src="../images">
       <div class="photo-card__footer">
         <p class="photo-card__title"></p>
         <button class="photo-card__button button" type="button"></button>
@@ -103,13 +102,11 @@
   <div class="popup__container popup__container_image-view">
     <button class="popup__close-button button"></button>
     <figure class="popup__figure">
-      <img class="popup__image" src="images" alt="Описание">
+      <img class="popup__image" src="" alt="Описание">
       <figcaption class="popup__caption"></figcaption>
     </figure>
   </div>
 </div>
-
-<script type="module" src="js/index.js"></script>
 
 </body>
 

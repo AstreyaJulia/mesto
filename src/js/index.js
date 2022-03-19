@@ -1,5 +1,8 @@
 'use strict';
 
+/** Импорт стилей */
+import '../pages/index.css';
+
 /** Массив карточек */
 import {initialCards} from "./initialCards.js";
 
