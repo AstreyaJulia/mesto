@@ -5,7 +5,7 @@
   <link rel="icon" href="favicon.ico">
   <link rel="icon" href="<%=require('./images/fav/fav32.svg')%>" type="image/svg+xml">
   <link rel="apple-touch-icon" href="<%=require('./images/fav/fav152.png')%>">
-  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="manifest" href="./manifest.webmanifest">
   <meta name="theme-color" content="#000000" />
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,7 +45,7 @@
   <li>
     <article class="photo-card">
       <button class="photo-card__delete button" type="button"></button>
-      <img class="photo-card__image button" alt="Изображение" src="../images">
+      <img class="photo-card__image button" alt="Изображение" src="">
       <div class="photo-card__footer">
         <p class="photo-card__title"></p>
         <button class="photo-card__button button" type="button"></button>
@@ -87,7 +87,7 @@
           <span class="popup__error" id="place_name-error"></span>
         </label>
         <label class="popup__input-group" for="place_url">
-          <input class="popup__input" type="url" placeholder="Ссылка на место" value="" name="title" id="place_url"
+          <input class="popup__input" type="url" placeholder="Ссылка на место" value="" name="link" id="place_url"
                  required>
           <span class="popup__error" id="place_url-error"></span>
         </label>

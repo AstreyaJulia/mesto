@@ -1,13 +1,13 @@
-import {getImage} from "./index.js";
-
 export class Card {
   /** Конструктор карточки
+   * @param handleCardClick - ф-я, открывающая всплывашку изображения при клике на картинку
    * @param cardTemplateSelector - селектор шаблона карточки из разметки
    * @param item - элемент из массива {name: название, link: ссылка} */
-  constructor(item, cardTemplateSelector) {
+  constructor({item, handleCardClick}, cardTemplateSelector) {
     this._name = item.name;
     this._link = item.link;
     this._cardElement = cardTemplateSelector;
+    this._handleCardClick = handleCardClick;
   }
 
   /** Получает шаблон, клонирует его
@@ -35,7 +35,7 @@ export class Card {
     this._buttonDelete = this._cardItem.querySelector('.photo-card__delete');
     this._buttonLike.addEventListener('click', () => this._likePhoto());
     this._buttonDelete.addEventListener('click', () => this._deletePhoto());
-    this._cardImage.addEventListener('click', getImage);
+    this._cardImage.addEventListener('click', () => this._handleCardClick());
   }
 
   /** Создает карточку, заполняет название, ссылку на изображение, устанавливает прослушиватели
