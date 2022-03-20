@@ -33,7 +33,7 @@ export class Popup {
   /** Добавляет прослушиватель нажатия на оверлей или кнопку закрытия */
   setEventListeners() {
     this._popup.addEventListener('click', (evt) => {
-      if (evt.target === evt.target.closest('.popup:not(:first-child)') || evt.target.closest('.popup__close-button')) {
+      if (evt.target.classList.contains('popup_opened') || evt.target.classList.contains('popup__close-button')) {
         this.close();
       }
     });

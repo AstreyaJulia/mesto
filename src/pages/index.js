@@ -1,13 +1,13 @@
 'use strict';
 
-import '../pages/index.css'; /** Импорт стилей */
-import {initialCards} from "./initialCards.js"; /** Массив карточек */
-import {Card} from "./Card.js"; /** Создает карточки, вешает прослушиватели */
-import {FormValidator, validationSettings} from "./FormValidator.js"; /** Создает карточки, вешает прослушиватели */
-import {Section} from './Section.js'
-import {PopupWithForm} from './PopupWithForm.js';
-import {PopupWithImage} from './PopupWithImage.js'; /** Создает всплывашку с изображением */
-import {UserInfo} from './UserInfo.js';
+import './index.css'; /** Импорт стилей */
+import {initialCards} from "../utils/const.js"; /** Массив карточек */
+import {Card} from "../components/Card.js"; /** Создает карточки, вешает прослушиватели */
+import {FormValidator, validationSettings} from "../components/FormValidator.js"; /** Создает карточки, вешает прослушиватели */
+import {Section} from '../components/Section.js'
+import {PopupWithForm} from '../components/PopupWithForm.js';
+import {PopupWithImage} from '../components/PopupWithImage.js'; /** Создает всплывашку с изображением */
+import {UserInfo} from '../components/UserInfo.js';
 
 /** Форма редактирования профиля
  * @type {Element} */

@@ -79,10 +79,11 @@ export class FormValidator {
   }
 
 
-  /** Валидирует инпуты (при открытии формы) */
+  /** Валидирует инпуты, прячет ошибки валидации (при открытии формы) */
   validateInputs() {
     this._inputArray.forEach((input) => {
       this._validateInput(input);
+      this._hideInputError(input);
     });
   }
 
