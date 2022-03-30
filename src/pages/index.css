@@ -47,4 +47,5 @@
 @import "../blocks/popup/__figure/popup__figure.css";
 @import "../blocks/popup/__image/popup__image.css";
 @import "../blocks/popup/__caption/popup__caption.css";
-
+@import "../blocks/popup/__delete-confirm/popup__delete-confirm.css";
+@import "../blocks/popup/__delete-button/popup__delete-button.css";
