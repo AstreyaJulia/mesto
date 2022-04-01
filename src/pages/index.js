@@ -1,13 +1,14 @@
 'use strict';
 
 import './index.css'; /** Импорт стилей */
-import {initialCards} from "../utils/const.js"; /** Массив карточек */
+import {initialCards, apiSettings} from "../utils/const.js"; /** Массив карточек, настройки для работы с сервером */
 import {Card} from "../components/Card.js"; /** Создает карточки, вешает прослушиватели */
 import {FormValidator, validationSettings} from "../components/FormValidator.js"; /** Создает карточки, вешает прослушиватели */
 import {Section} from '../components/Section.js'
 import {PopupWithForm} from '../components/PopupWithForm.js';
 import {PopupWithImage} from '../components/PopupWithImage.js'; /** Создает всплывашку с изображением */
 import {UserInfo} from '../components/UserInfo.js';
+import {Api} from '../components/Api';
 
 /** Форма редактирования профиля
  * @type {Element} */
@@ -36,6 +37,10 @@ const popupSubtitleInput = profileEditPopup.querySelector('#profile_title');
 /** Кнопка Добавить место */
 /** @type {HTMLButtonElement} */
 const buttonAddPlace = document.querySelector(".profile__add-button");
+
+/** Экземпляр API
+ * @type {Api} */
+const api = new Api(apiSettings);
 
 /** Экземпляр валидатора для формы редактирования профиля
  * @type {FormValidator} */
@@ -77,14 +82,14 @@ const copyCard = (item) => {
 
 /** Создает новую секцию для галереи
  * @type {Section} - экземпляр класса Section */
-const sectionPhotoCards = new Section(
+/*const sectionPhotoCards = new Section(
   {
     items: initialCards,
     renderer: (item) => {
       sectionPhotoCards.addItem(copyCard(item))
     }
   },
-  '.photo-cards');
+  '.photo-cards');*/
 
 /** Экземпляр формы добавления карточки */
 const addPhotoForm = new PopupWithForm(
@@ -123,7 +128,22 @@ buttonAddPlace.addEventListener('click', function () {
 document.addEventListener('DOMContentLoaded', function () {
 
   /** Отрисовывает карточки при загрузке страницы */
-  sectionPhotoCards.renderElements();
+  /*sectionPhotoCards.renderElements();*/
+
+  const initialCards = api.getCards()
+    .then((initialCards) => {
+      const sectionPhotoCards = new Section({
+        items: initialCards,
+        renderer: (item) => {
+          sectionPhotoCards.addItem(copyCard(item))
+        }
+      }, '.photo-cards');
+      sectionPhotoCards.renderElements();
+      return sectionPhotoCards
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 
   /** Включает валидацию */
   profileEditValidator.enableValidation();
