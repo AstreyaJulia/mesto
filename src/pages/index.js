@@ -1,12 +1,17 @@
 'use strict';
 
 import './index.css'; /** Импорт стилей */
-import {initialCards, apiSettings} from "../utils/const.js"; /** Массив карточек, настройки для работы с сервером */
+import {apiSettings} from "../utils/const.js"; /** Настройки для работы с сервером */
 import {Card} from "../components/Card.js"; /** Создает карточки, вешает прослушиватели */
-import {FormValidator, validationSettings} from "../components/FormValidator.js"; /** Создает карточки, вешает прослушиватели */
+import {
+  FormValidator,
+  validationSettings
+} from "../components/FormValidator.js"; /** Создает карточки, вешает прослушиватели */
 import {Section} from '../components/Section.js'
 import {PopupWithForm} from '../components/PopupWithForm.js';
 import {PopupWithImage} from '../components/PopupWithImage.js'; /** Создает всплывашку с изображением */
+import {PopupWithConfirmation} from '../components/PopupWithConfirmation.js'; /** Создает всплывашку с изображением */
+
 import {UserInfo} from '../components/UserInfo.js';
 import {Api} from '../components/Api';
 
@@ -53,6 +58,9 @@ const newPlaceValidator = new FormValidator(validationSettings, formNewPlace);
 /** Экземпляр всплывашки просмотра изображения */
 const popupImage = new PopupWithImage('.popup_view_image');
 
+/** Экземпляр всплывашки подтверждения удаления карточки */
+const popupImageDelete = new PopupWithConfirmation('.popup_delete-place');
+
 /** Экземпляр профиля пользователя */
 const profile = new UserInfo({profileTitle: ".profile__title", profileSubtitle: ".profile__subtitle"});
 
@@ -70,26 +78,17 @@ const profileForm = new PopupWithForm(
  * @param item - элемент карточки {name, link}
  * @returns {Node} - готовый узел карточки с прослушивателями */
 const copyCard = (item) => {
-  const card = new Card({
+  return new Card({
       item,
       handleCardClick: () => {
         popupImage.open({title: item.name, src: item.link});
       },
+      handleDeleteCard: () => {
+        popupImageDelete.open()
+      }
     },
-    "#photo-card");
-  return card.createCard();
+    "#photo-card").createCard();
 }
-
-/** Создает новую секцию для галереи
- * @type {Section} - экземпляр класса Section */
-/*const sectionPhotoCards = new Section(
-  {
-    items: initialCards,
-    renderer: (item) => {
-      sectionPhotoCards.addItem(copyCard(item))
-    }
-  },
-  '.photo-cards');*/
 
 /** Экземпляр формы добавления карточки */
 const addPhotoForm = new PopupWithForm(
@@ -128,11 +127,10 @@ buttonAddPlace.addEventListener('click', function () {
 document.addEventListener('DOMContentLoaded', function () {
 
   /** Отрисовывает карточки при загрузке страницы */
-  /*sectionPhotoCards.renderElements();*/
-
-  const initialCards = api.getCards()
+  api.getCards()
     .then((initialCards) => {
-      const sectionPhotoCards = new Section({
+      /** Создает новую секцию для галереи @type {Section} */
+       const sectionPhotoCards = new Section({
         items: initialCards,
         renderer: (item) => {
           sectionPhotoCards.addItem(copyCard(item))
@@ -154,6 +152,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /** Вешает прослушиватели всплывашки редактирования профиля */
   profileForm.setEventListeners();
+
+  /** Вешает прослушиватели всплывашки удаления карточки */
+  popupImageDelete.setEventListeners();
 
   /** Вешает прослушиватели всплывашки добавления карточки */
   addPhotoForm.setEventListeners();
