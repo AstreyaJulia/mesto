@@ -1,56 +1,150 @@
 'use strict';
 
-import './index.css'; /** Импорт стилей */
-import {apiSettings} from "../utils/const.js"; /** Настройки для работы с сервером */
-import {Card} from "../components/Card.js"; /** Создает карточки, вешает прослушиватели */
+import './index.css';
+import {apiSettings} from "../utils/const.js";
+import {Card} from "../components/Card.js";
 import {
   FormValidator,
   validationSettings
-} from "../components/FormValidator.js"; /** Создает карточки, вешает прослушиватели */
+} from "../components/FormValidator.js";
 import {Section} from '../components/Section.js'
 import {PopupWithForm} from '../components/PopupWithForm.js';
-import {PopupWithImage} from '../components/PopupWithImage.js'; /** Создает всплывашку с изображением */
-import {PopupWithConfirmation} from '../components/PopupWithConfirmation.js'; /** Создает всплывашку с изображением */
-
+import {PopupWithImage} from '../components/PopupWithImage.js';
+import {PopupWithConfirmation} from '../components/PopupWithConfirmation.js';
 import {UserInfo} from '../components/UserInfo.js';
 import {Api} from '../components/Api';
 
+/** Экземпляр API
+ * @type {Api} */
+const api = new Api(apiSettings);
 
-/** Формы */
+/** Отрисовывает карточки при загрузке страницы */
+api.getCards()
+  .then((initialCards) =>
+    /** Возможно, лишний промис замедляет получение данных, но зато id пользователя не нужно прописывать в Card */
+    api.getUserInfo()
+      .then((data) => {
+        /** Создает новую секцию для галереи @type {Section} */
+        const sectionPhotoCards = new Section({
+          items: initialCards,
+          renderer: (item) => {
+            sectionPhotoCards.addItem(copyCard(item, data._id))
+          }
+        }, '.photo-cards');
+        sectionPhotoCards.renderElements();
+        return sectionPhotoCards
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+  );
+
+api.getUserInfo()
+  .then((user) => {
+    profile.setUserInfo(user)
+  })
+
+/** Профиль пользователя */
 
 /** Форма редактирования профиля
  * @type {Element} */
 const formProfileEdit = document.querySelector(".popup_edit_profile " + validationSettings.formSelector);
 
-/** Форма добавления карточки
- * @type {Element} */
-const formNewPlace = document.querySelector(".popup_new-place " + validationSettings.formSelector);
-
 /** Форма редактирования аватара
  * @type {Element} */
 const formAvatarEdit = document.querySelector(".popup_update-avatar " + validationSettings.formSelector);
-
-/** Валидация */
 
 /** Экземпляр валидатора для формы редактирования профиля
  * @type {FormValidator} */
 const profileEditValidator = new FormValidator(validationSettings, formProfileEdit);
 
-/** Экземпляр валидатора для формы добавления карточки
- * @type {FormValidator} */
-const newPlaceValidator = new FormValidator(validationSettings, formNewPlace);
-
 /** Экземпляр валидатора для формы редактирования аватара
  * @type {FormValidator} */
 const avatarEditValidator = new FormValidator(validationSettings, formAvatarEdit);
-
-/** Всплывашки */
 
 /** Всплывашка редактирования профиля */
 /** @type {HTMLElement} */
 const profileEditPopup = document.querySelector(".popup_edit_profile");
 
-/** Экземпляры классов всплывашек */
+/** Имя пользователя в всплывашке редактирования профиля */
+/** @type {HTMLInputElement} */
+const popupTitleInput = profileEditPopup.querySelector('#profile_name');
+
+/** Подпись пользователя в всплывашке редактирования профиля */
+/** @type {HTMLInputElement} */
+const popupAboutInput = profileEditPopup.querySelector('#profile_about');
+
+/** Кнопка редактирования профиля */
+/** @type {HTMLElement} */
+const profileEditButton = document.querySelector(".profile__button");
+
+/** Экземпляр профиля пользователя */
+const profile = new UserInfo(
+  {
+    profileTitle: ".profile__title",
+    profileAbout: ".profile__about",
+    profileAvatar: ".profile__avatar"
+  }
+);
+
+/** Экземпляр формы редактирования профиля */
+const profileForm = new PopupWithForm(
+  ".popup_edit_profile",
+  {
+    handleSubmitForm: (inputValues) => {
+      api.sendUserInfo(inputValues)
+        .then((data) => {
+          profile.setUserInfo(
+            {name: data.name, about: data.about, avatar: data.avatar}
+          );
+          profileForm.close();
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+    }
+  });
+
+/** Присваивает инпутам в форме редактирования профиля значения
+ * @param info объект значений {title: title, about: about} */
+const setProfileInputs = (info) => {
+  popupTitleInput.value = info.title;
+  popupAboutInput.value = info.about;
+};
+
+const avatarEditButton = document.querySelector(".profile__edit-avatar-button");
+
+avatarEditButton.addEventListener('click', () => {
+  avatarForm.open();
+  avatarEditValidator.validateInputs();
+  avatarEditValidator.switchSubmitButton();
+})
+
+/** Экземпляр формы редактирования аватара */
+const avatarForm = new PopupWithForm(
+  ".popup_update-avatar",
+  {
+    handleSubmitForm: (inputValues) => {
+      api.updateAvatar(inputValues.avatar)
+        .then((res) => {
+          profile.setUserInfo({avatar: res.avatar, name: res.name, about: res.about});
+          avatarForm.close();
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+    }
+  })
+
+/** Карточки изображений */
+
+/** Форма добавления карточки
+ * @type {Element} */
+const formNewPlace = document.querySelector(".popup_new-place " + validationSettings.formSelector);
+
+/** Экземпляр валидатора для формы добавления карточки
+ * @type {FormValidator} */
+const newPlaceValidator = new FormValidator(validationSettings, formNewPlace);
 
 /** Экземпляр всплывашки просмотра изображения */
 const popupImage = new PopupWithImage('.popup_view_image');
@@ -73,54 +167,9 @@ const popupImageDelete = new PopupWithConfirmation(
   }
 );
 
-
-/** Имя пользователя в всплывашке редактирования профиля */
-/** @type {HTMLInputElement} */
-const popupTitleInput = profileEditPopup.querySelector('#profile_name');
-
-/** Подпись пользователя в всплывашке редактирования профиля */
-/** @type {HTMLInputElement} */
-const popupSubtitleInput = profileEditPopup.querySelector('#profile_title');
-
 /** Кнопка Добавить место */
 /** @type {HTMLButtonElement} */
 const buttonAddPlace = document.querySelector(".profile__add-button");
-
-/** Экземпляр API
- * @type {Api} */
-const api = new Api(apiSettings);
-
-/** Профиль пользователя */
-
-/** Кнопка редактирования профиля */
-/** @type {HTMLElement} */
-const profileEditButton = document.querySelector(".profile__button");
-
-/** Экземпляр профиля пользователя */
-const profile = new UserInfo(
-  {
-    profileTitle: ".profile__title",
-    profileSubtitle: ".profile__subtitle",
-    profileAvatar: ".profile__avatar"
-  }
-);
-
-/** Экземпляр формы редактирования профиля */
-const profileForm = new PopupWithForm(
-  ".popup_edit_profile",
-  {
-    handleSubmitForm: (inputValues) => {
-      api.sendUserInfo(inputValues)
-        .then((data) => {
-          profile.setUserInfo(
-            {name: data.name, title: data.about, avatar: data.avatar}
-          )
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-    }
-  });
 
 /** Создает экземпляры карточек
  * @param item - элемент карточки {name, link}
@@ -172,8 +221,6 @@ const addPhotoForm = new PopupWithForm(
   ".popup_new-place",
   {
     handleSubmitForm: (inputValues) => {
-      /*sectionPhotoCards.addItem(copyCard(inputValues));
-      addPhotoForm.close();*/
       api.sendCard(inputValues)
         .then((data) => {
           api.getUserInfo()
@@ -186,12 +233,6 @@ const addPhotoForm = new PopupWithForm(
     }
   });
 
-/** Присваивает инпутам в форме редактирования профиля значения
- * @param info объект значений {title: title, subtitle: subtitle} */
-const setProfileInputs = (info) => {
-  popupTitleInput.value = info.title;
-  popupSubtitleInput.value = info.subtitle;
-};
 
 /** Прослушиватель нажатия на кнопку редактирования профиля */
 profileEditButton.addEventListener('click', function () {
@@ -212,27 +253,6 @@ buttonAddPlace.addEventListener('click', function () {
 /** Ждем загрузки DOM */
 document.addEventListener('DOMContentLoaded', function () {
 
-  /** Отрисовывает карточки при загрузке страницы */
-  api.getCards()
-    .then((initialCards) =>
-      /** Возможно, лишний промис замедляет получение данных, но зато id пользователя не нужно прописывать в Card */
-      api.getUserInfo()
-        .then((data) => {
-        /** Создает новую секцию для галереи @type {Section} */
-        const sectionPhotoCards = new Section({
-          items: initialCards,
-          renderer: (item) => {
-            sectionPhotoCards.addItem(copyCard(item, data._id))
-          }
-        }, '.photo-cards');
-        sectionPhotoCards.renderElements();
-        return sectionPhotoCards
-      })
-        .catch((err) => {
-          console.log(err);
-        })
-    );
-
   /** Включает валидацию */
   profileEditValidator.enableValidation();
   newPlaceValidator.enableValidation();
@@ -249,4 +269,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /** Вешает прослушиватели всплывашки добавления карточки */
   addPhotoForm.setEventListeners();
+
+  /** Вешает прослушиватели всплывашки редактирования аватара */
+  avatarForm.setEventListeners();
 });

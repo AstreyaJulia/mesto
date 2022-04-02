@@ -9,7 +9,7 @@
 
 @import "../blocks/profile/profile.css";
 @import "../blocks/profile/__title/profile__title.css";
-@import "../blocks/profile/__subtitle/profile__subtitle.css";
+@import "../blocks/profile/__about/profile__about.css";
 @import "../blocks/profile/__avatar/profile__avatar.css";
 @import "../blocks/profile/__title-group/profile__title-group.css";
 @import "../blocks/profile/__button/profile__button.css";

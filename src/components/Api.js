@@ -42,14 +42,14 @@ export class Api {
   }
 
   /** Обновляет аватар пользователя на сервере
-   * @param data - отправляемые данные
+   * @param avatar
    * @returns {Promise<Response>} - объект с обновленными даннями / текст ошибки */
-  updateAvatar(data) {
+  updateAvatar(avatar) {
     return fetch(`${this._serverURL}/users/me/avatar`, {
       method: 'PATCH',
       headers: this._headers,
       body: JSON.stringify({
-        avatar: data.avatar
+        avatar: avatar
       })
     })
       .then((res) => {
