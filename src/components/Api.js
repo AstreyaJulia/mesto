@@ -24,7 +24,7 @@ export class Api {
   /** Отправляет инфо о пользователе на сервер
    * @param data - отправляемые данные
    * @returns {Promise<Response>} - объект с обновленными даннями / текст ошибки */
-  setUserInfo(data) {
+  sendUserInfo(data) {
     return fetch(`${this._serverURL}/users/me`, {
       method: 'PATCH',
       headers: this._headers,
@@ -97,30 +97,36 @@ export class Api {
   }
 
   /** Удаляет карточку с сервера
-   * @param data - объект с данными карточки
+   * @param cardID - ID карточки
    * @returns {Promise<Response>} - объект карточки / текст ошибки */
-  deleteCard(data) {
-    return fetch(`${this._serverURL}/cards/${data._id}`, {
+  deleteCard(cardID) {
+    return fetch(`${this._serverURL}/cards/${cardID}`, {
       method: 'DELETE',
       headers: this._headers
     })
   }
 
   /** Ставит лайк
-   * @param data - объект с данными карточки
+   * @param cardID - ID карточки
    * @returns {Promise<Response>} - объект карточки / текст ошибки */
-  setLike(data) {
-    return fetch(`${this._serverURL}/cards/likes/${data._id}`, {
+  setLike(cardID) {
+    return fetch(`${this._serverURL}/cards/${cardID}/likes`, {
       method: 'PUT',
       headers: this._headers
-    });
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(`Ошибка: ${res.status}`);
+      });
   }
 
   /** Удаляет лайк
-   * @param data - объект с данными карточки
+   * @param cardID - ID карточки
    * @returns {Promise<Response>} - объект карточки / текст ошибки */
-  deleteLIke(data) {
-    return fetch(`${this._serverURL}/cards/likes/${data.cardId}`, {
+  deleteLike(cardID) {
+    return fetch(`${this._serverURL}/cards/${cardID}/likes`, {
       method: 'DELETE',
       headers: this._headers
     })
