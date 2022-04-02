@@ -49,7 +49,10 @@
       <img class="photo-card__image button" alt="Изображение" src="src">
       <div class="photo-card__footer">
         <p class="photo-card__title"></p>
-        <button class="photo-card__button button" type="button" aria-label="Поставить лайк"></button>
+        <div class="photo-card__like-container">
+          <button class="photo-card__like-button button" type="button" aria-label="Поставить лайк"></button>
+          <p class="photo-card__like-counter"></p>
+        </div>
       </div>
     </article>
   </li>
@@ -113,8 +116,10 @@
 <div class="popup popup_delete-place">
   <div class="popup__container popup__container_delete-place">
     <button class="popup__close-button button" type="button" aria-label="Закрыть всплывающее окно"></button>
-    <h2 class="popup__title">Вы уверены?</h2>
-    <button class="popup__delete-button button" type="button">Да</button>
+    <form class="popup__form popup__form_image_delete">
+      <h2 class="popup__title">Вы уверены?</h2>
+      <button class="popup__submit popup__submit_image_delete" type="submit">Да</button>
+    </form>
   </div>
 </div>
 
