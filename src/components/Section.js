@@ -13,10 +13,9 @@ export class Section {
   }
 
   /** Добавляет элемент в контейнер
-   * @param element - добавляемый DOM-элемент
-   */
+   * @param element - добавляемый DOM-элемент */
   addItem(element){
-    this._container.prepend(element);
+    this._container.append(element);
   }
 
   /** Отрисовывает элементы (вначале очищает содержимое контейнера) */
