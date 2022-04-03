@@ -46,7 +46,7 @@
   <li>
     <article class="photo-card">
       <button class="photo-card__delete button" type="button" aria-label="Удалить место"></button>
-      <img class="photo-card__image button" alt="Изображение" src="src">
+      <img class="photo-card__image button" alt="Изображение" src="<%=require('./images/avatars/profile__avatar.jpg')%>" >
       <div class="photo-card__footer">
         <p class="photo-card__title"></p>
         <div class="photo-card__like-container">
@@ -74,7 +74,7 @@
           <span class="popup__error" id="profile_about-error"></span>
         </label>
       </fieldset>
-      <button class="popup__submit" type="submit">Сохранить</button>
+      <button class="popup__submit" type="submit" data-value="Сохранить">Сохранить</button>
     </form>
   </div>
 </div>
@@ -96,7 +96,7 @@
           <span class="popup__error" id="place_url-error"></span>
         </label>
       </fieldset>
-      <button class="popup__submit" type="submit">Создать</button>
+      <button class="popup__submit" type="submit" data-value="Создать">Создать</button>
     </form>
   </div>
 </div>
@@ -106,7 +106,7 @@
   <div class="popup__container popup__container_image-view">
     <button class="popup__close-button button" type="button" aria-label="Закрыть всплывающее окно"></button>
     <figure class="popup__figure">
-      <img class="popup__image" src="src" alt="Описание">
+      <img class="popup__image" src="<%=require('./images/avatars/profile__avatar.jpg')%>" alt="Описание">
       <figcaption class="popup__caption"></figcaption>
     </figure>
   </div>
@@ -118,7 +118,7 @@
     <button class="popup__close-button button" type="button" aria-label="Закрыть всплывающее окно"></button>
     <form class="popup__form popup__form_image_delete">
       <h2 class="popup__title">Вы уверены?</h2>
-      <button class="popup__submit popup__submit_image_delete" type="submit">Да</button>
+      <button class="popup__submit popup__submit_image_delete" type="submit" data-value="Да">Да</button>
     </form>
   </div>
 </div>
@@ -136,7 +136,7 @@
           <span class="popup__error" id="avatar_url-error"></span>
         </label>
       </fieldset>
-      <button class="popup__submit" type="submit">Сохранить</button>
+      <button class="popup__submit" type="submit" data-value="Сохранить">Сохранить</button>
     </form>
   </div>
 </div>

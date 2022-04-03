@@ -6,22 +6,27 @@ export class Section {
    * @param renderer - ф-я создающая и орисовывающая данные
    * @param containerSelector - селектор контейнера, в который добавляются созданные элементы
    */
-  constructor({items, renderer}, containerSelector) {
+  constructor({renderer}, containerSelector) {
     this._renderer = renderer;
     this._container = document.querySelector(containerSelector);
-    this._items = items;
   }
 
-  /** Добавляет элемент в контейнер
+  /** Добавляет элемент в конец контейнера
    * @param element - добавляемый DOM-элемент */
   addItem(element){
     this._container.append(element);
   }
 
+  /** Добавляет созданный элемент в начало контейнера
+   * @param element - добавляемый DOM-элемент */
+  addNewItem(element){
+    this._container.prepend(element);
+  }
+
   /** Отрисовывает элементы (вначале очищает содержимое контейнера) */
-  renderElements(){
+  renderElements(items){
     this._container.innerHTML = '';
-    this._items.forEach((element) => {
+    items.forEach((element) => {
       this._renderer(element);
     });
   }

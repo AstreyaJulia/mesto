@@ -11,6 +11,7 @@ export class PopupWithForm extends Popup {
     this._handleSubmitForm = handleSubmitForm;
     this._form = this._popup.querySelector('.popup__form');
     this._inputList = this._form.querySelectorAll('.popup__input');
+    this._submitbutton = this._popup.querySelector('.popup__submit');
   }
 
   /** Получает значения инпутов формы всплывашки
@@ -27,6 +28,7 @@ export class PopupWithForm extends Popup {
   setEventListeners() {
     super.setEventListeners();
     this._form.addEventListener('submit', () => {
+      this.renderLoading(true);
       this._handleSubmitForm(this._getInputValues());
     });
   }
@@ -35,5 +37,14 @@ export class PopupWithForm extends Popup {
     super.close();
     this._form.reset();
   }
+
+  renderLoading(isLoading) {
+    if (isLoading) {
+      this._submitbutton.textContent = 'Сохранение...';
+    } else {
+      this._submitbutton.textContent = this._submitbutton.dataset.value;
+    }
+  }
+
 }
 

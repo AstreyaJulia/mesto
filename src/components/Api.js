@@ -3,6 +3,13 @@ export class Api {
   constructor(options) {
     this._headers = options.headers;
     this._serverURL = options.serverURL;
+    /** возвращает ответ / ошибку после выполнения промиса */
+    this._handlePromiseReturn = ((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Ошибка: ${res.status}`);
+    })
   }
 
   /** Работа с данными пользователя */
@@ -13,12 +20,7 @@ export class Api {
     return fetch(`${this._serverURL}/users/me`, {
       headers: this._headers
     })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-      });
+      .then((res) => this._handlePromiseReturn(res));
   }
 
   /** Отправляет инфо о пользователе на сервер
@@ -33,12 +35,7 @@ export class Api {
         about: data.about
       })
     })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-      });
+      .then((res) => this._handlePromiseReturn(res));
   }
 
   /** Обновляет аватар пользователя на сервере
@@ -52,12 +49,7 @@ export class Api {
         avatar: avatar
       })
     })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-      });
+      .then((res) => this._handlePromiseReturn(res));
   }
 
   /** Работа с карточками */
@@ -68,12 +60,7 @@ export class Api {
     return fetch(`${this._serverURL}/cards`, {
       headers: this._headers
     })
-      .then(res => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-      });
+      .then((res) => this._handlePromiseReturn(res));
   }
 
   /** Отправляет данные о новой карточке на сервер
@@ -88,12 +75,7 @@ export class Api {
         link: data.link
       })
     })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-      });
+      .then((res) => this._handlePromiseReturn(res));
   }
 
   /** Удаляет карточку с сервера
@@ -114,12 +96,7 @@ export class Api {
       method: 'PUT',
       headers: this._headers
     })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-      });
+      .then((res) => this._handlePromiseReturn(res));
   }
 
   /** Удаляет лайк
@@ -130,12 +107,7 @@ export class Api {
       method: 'DELETE',
       headers: this._headers
     })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-      });
+      .then((res) => this._handlePromiseReturn(res));
   }
 
 }

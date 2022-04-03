@@ -18,31 +18,29 @@ import {Api} from '../components/Api';
  * @type {Api} */
 const api = new Api(apiSettings);
 
-/** Отрисовывает карточки при загрузке страницы */
-api.getCards()
-  .then((initialCards) =>
-    /** Возможно, лишний промис замедляет получение данных, но зато id пользователя не нужно прописывать в Card */
-    api.getUserInfo()
-      .then((data) => {
-        /** Создает новую секцию для галереи @type {Section} */
-        const sectionPhotoCards = new Section({
-          items: initialCards,
-          renderer: (item) => {
-            sectionPhotoCards.addItem(copyCard(item, data._id))
-          }
-        }, '.photo-cards');
-        sectionPhotoCards.renderElements();
-        return sectionPhotoCards
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-  );
+/** ID залогиненного пользователя
+ * @type {string} */
+let currentUser = '';
 
-api.getUserInfo()
-  .then((user) => {
-    profile.setUserInfo(user)
+/** Параллельное получение данных пользователя и массива карточек */
+Promise.all([api.getUserInfo(), api.getCards()])
+  .then((res) => {
+      currentUser = res[0]._id;
+      /** Из результата 1 промиса получаем ИД пользователя, и данные профиля */
+      profile.setUserInfo(res[0]);
+      sectionPhotoCards.renderElements(res[1]); /** из результата второго - карточки */
+    }
+  )
+  .catch((err) => {
+    console.log(err)
   })
+
+/** Создает новую секцию для галереи @type {Section} */
+const sectionPhotoCards = new Section({
+  renderer: (item) => {
+    sectionPhotoCards.addItem(copyCard(item, currentUser))
+  }
+}, '.photo-cards');
 
 /** Профиль пользователя */
 
@@ -102,6 +100,9 @@ const profileForm = new PopupWithForm(
         .catch((err) => {
           console.log(err);
         })
+        .finally(() => {
+          profileForm.renderLoading(false);
+        })
     }
   });
 
@@ -132,6 +133,9 @@ const avatarForm = new PopupWithForm(
         })
         .catch((err) => {
           console.log(err);
+        })
+        .finally(() => {
+          avatarForm.renderLoading(false);
         })
     }
   })
@@ -223,12 +227,11 @@ const addPhotoForm = new PopupWithForm(
     handleSubmitForm: (inputValues) => {
       api.sendCard(inputValues)
         .then((data) => {
-          api.getUserInfo()
-            .then((user) => {
-              const sectionPhotoCards = new Section({}, '.photo-cards')
-              sectionPhotoCards.addItem(copyCard(data, user._id))
-            })
-
+          sectionPhotoCards.addNewItem(copyCard(data, currentUser));
+          addPhotoForm.close();
+        })
+        .finally(() => {
+          addPhotoForm.renderLoading(false);
         })
     }
   });
