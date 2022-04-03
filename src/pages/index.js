@@ -1,12 +1,9 @@
 'use strict';
 
 import './index.css';
-import {apiSettings} from "../utils/const.js";
+import {apiSettings, validationSettings} from "../utils/const.js"; /** Настройки */
 import {Card} from "../components/Card.js";
-import {
-  FormValidator,
-  validationSettings
-} from "../components/FormValidator.js";
+import {FormValidator} from "../components/FormValidator.js";
 import {Section} from '../components/Section.js'
 import {PopupWithForm} from '../components/PopupWithForm.js';
 import {PopupWithImage} from '../components/PopupWithImage.js';
