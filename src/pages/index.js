@@ -157,8 +157,7 @@ const popupImageDelete = new PopupWithConfirmation(
     handleSubmitDelete: (id, element) => {
       api.deleteCard(id)
         .then(() => {
-          element.remove();
-          element = '';
+          element.deleteCard();
           popupImageDelete.close();
         })
         .catch((err) => {
@@ -177,35 +176,29 @@ const buttonAddPlace = document.querySelector(".profile__add-button");
  * @param currentUser
  * @returns {Node} - готовый узел карточки с прослушивателями */
 const copyCard = (item, currentUser) => {
-  return new Card({
+  const card = new Card({
       item, currentUser,
       handleCardClick: () => {
         popupImage.open({title: item.name, src: item.link});
       },
       handleDeleteCard: (id, element) => {
-        popupImageDelete.open();
+        popupImageDelete.open(card);
         popupImageDelete.getCard(id, element)
       },
       handleLikeCard: {
-        handleSetLike: (id, element) => {
+        handleSetLike: (id) => {
           api.setLike(id)
             .then((res) => {
-              const counter = element.querySelector('.photo-card__like-counter');
-              res.likes.length !== 0
-                ? counter.textContent = res.likes.length
-                : counter.textContent = '0';
+              card.updateLikes(res.likes, "setLike");
             })
             .catch((err) => {
               console.log(err);
             })
         },
-        handleDeleteLike: (id, element) => {
+        handleDeleteLike: (id) => {
           api.deleteLike(id)
             .then((res) => {
-              const counter = element.querySelector('.photo-card__like-counter');
-              res.likes.length !== 0
-                ? counter.textContent = res.likes.length
-                : counter.textContent = '0';
+              card.updateLikes(res.likes, "deleteLike");
             })
             .catch((err) => {
               console.log(err);
@@ -214,7 +207,8 @@ const copyCard = (item, currentUser) => {
         }
       }
     },
-    "#photo-card").createCard();
+    "#photo-card");
+  return card.createCard();
 }
 
 /** Экземпляр формы добавления карточки */

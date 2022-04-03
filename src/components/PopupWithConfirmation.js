@@ -15,8 +15,7 @@ export class PopupWithConfirmation extends Popup {
     super.setEventListeners();
     this._form.addEventListener('submit', (evt) => {
       evt.preventDefault();
-      this._handleSubmitDelete(this._idCard, this._cardElement);
-      this.close();
+      this._handleSubmitDelete(this._idCard, this._card);
     })
   }
 
@@ -24,6 +23,11 @@ export class PopupWithConfirmation extends Popup {
     this._clear();
     this._idCard = id;
     this._cardElement = element;
+  }
+
+  open(card) {
+    this._card = card;
+    super.open();
   }
 
   /** Очистка id карточки, элемента карточки

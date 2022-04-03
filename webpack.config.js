@@ -39,6 +39,11 @@ module.exports = {
           'postcss-loader'
         ]
       },
+      {
+        test: /\.webmanifest$/i,
+        use: 'webpack-webmanifest-loader',
+        type: 'asset/resource',
+      },
     ]
   },
   plugins: [
